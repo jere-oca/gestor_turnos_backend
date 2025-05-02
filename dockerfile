@@ -7,11 +7,11 @@ WORKDIR /app
 # Copiamos los archivos de dependencias
 COPY requirements.txt .
 
-# Instalamos dependencias
+# Instalamos las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiamos el resto de la app
-COPY ./app .
+COPY ./app /app
 
 # Puerto que usará Django
 EXPOSE 8000

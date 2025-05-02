@@ -16,7 +16,21 @@ Este proyecto es una aplicación web para gestionar turnos
 
 ## 🔧 Cómo ejecutar el proyecto
 
-1. Clona este repositorio:
+### 📥 Clonar el repositorio
 ```bash
 git clone https://github.com/UTN-BDA/Grupo9.git
 cd Grupo9
+```
+### 🐳 Levantar los contenedores
+```bash
+docker-compose up -d --build
+```
+### 🗃️ Aplicar migraciones de base de datos
+```bash
+docker-compose exec web bash
+python manage.py migrate
+```
+### 🌐 Acceder a la aplicación
+```bash
+http://localhost:8000/
+```
