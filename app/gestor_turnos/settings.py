@@ -72,10 +72,15 @@ WSGI_APPLICATION = 'gestor_turnos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+#REMIND ME USAR UN ENV PARA LA BASE DE DATOS
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+ 'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',         # Debe coincidir con POSTGRES_DB
+        'USER': 'user',               # Debe coincidir con POSTGRES_USER
+        'PASSWORD': 'password',       # Debe coincidir con POSTGRES_PASSWORD
+        'HOST': 'db',                 # Nombre del servicio en docker-compose
+        'PORT': '5432',
     }
 }
 
