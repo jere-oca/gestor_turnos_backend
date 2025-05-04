@@ -1,0 +1,9 @@
+<h2>Mis turnos</h2>
+<ul>
+    {% for turno in turnos %}
+        <li>{{ turno.fecha }} {{ turno.hora }} - {{ turno.estado }}</li>
+    {% empty %}
+        <li>No tenés turnos</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_turno' %}">Crear nuevo turno</a>
