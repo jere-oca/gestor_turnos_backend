@@ -1,19 +1,23 @@
 from django import forms
-from django.contrib.auth.models import User
-from .models import Doctor, Pacient
+from .models import AuthUser, Persona
 
-class UserRegisterForm(forms.ModelForm):
+class AuthUserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
     class Meta:
-        model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        model = AuthUser
+        fields = ['username', 'password']
 
-class DoctorRegisterForm(forms.ModelForm):
+class PersonaForm(forms.ModelForm):
     class Meta:
-        model = Doctor
-        fields = ['especialidad', 'consultorio']
-
-class PacientRegisterForm(forms.ModelForm):
-    class Meta:
-        model = Pacient
-        fields = ['fecha_nacimiento', 'direccion', 'telefono']
+        model = Persona
+        fields = [
+            'tipo_usuario',
+            'nombre',
+            'apellido',
+            'fecha_nacimiento',
+            'direccion',
+            'telefono',
+            'especialidad',
+            'consultorio'
+        ]
+        
