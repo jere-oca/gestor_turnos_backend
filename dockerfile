@@ -14,7 +14,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app /app
 
 # Puerto que usará Django
+
 EXPOSE 8000
+
 
 # Comando por defecto al ejecutar el contenedor
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
