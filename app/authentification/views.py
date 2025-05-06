@@ -3,7 +3,21 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import AuthUser, Persona
 from django.db import transaction
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render
 
+def login_render(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            # Aquí puedes autenticar y loguear al usuario si lo deseas
+            return render(request, 'login.html', {'form': form, 'success': True})
+        else:
+            return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
+    else:  # GET
+        form = AuthenticationForm()
+        return render(request, 'login.html', {'form': form})
+    
 @csrf_exempt
 def persona_register(request):
     if request.method == 'POST':
@@ -54,7 +68,7 @@ def login_view(request):
             try:
                 auth_user = AuthUser.objects.get(username=username)
                 if auth_user.password == password:  # Si usas hash, compara con check_password
-                    persona = Persona.objects.get(auth_user=auth_user)
+                    persona  = AuthUser.objects.get(auth_user=auth_user)
                     return JsonResponse({
                         'success': True,
                         'message': 'Inicio de sesión exitoso.',
