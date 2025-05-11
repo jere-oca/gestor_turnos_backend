@@ -2,7 +2,7 @@ services:
   web:
     build: .
     volumes:
-      - ./app:/app
+      - app_data:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -32,6 +32,8 @@ services:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    env_file:
+      - .env
 
   pgadmin:
     image: dpage/pgadmin4
@@ -39,9 +41,14 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     ports:
       - "8080:80"
     depends_on:
       - db
+
 volumes:
+  app_data:
   db_data:
+  pgadmin_data:
