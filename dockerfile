@@ -4,7 +4,11 @@ FROM python:3.12
 # Establecemos el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copiamos los archivos de dependencias
+# Previene escribir archivos pyc
+ENV PYTHONDONTWRITEBYTECODE=1
+# Previene buffering 'stdout' y 'stderr'
+ENV PYTHONUNBUFFERED=1
+
 COPY requirements.txt .
 
 # Instalamos las dependencias
