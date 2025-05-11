@@ -70,18 +70,18 @@ WSGI_APPLICATION = 'gestor_turnos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-#REMIND ME USAR UN ENV PARA LA BASE DE DATOS
 DATABASES = {
- 'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mydatabase',         # Debe coincidir con POSTGRES_DB
-        'USER': 'user',               # Debe coincidir con POSTGRES_USER
-        'PASSWORD': 'password',       # Debe coincidir con POSTGRES_PASSWORD
-        'HOST': 'db',                 # Nombre del servicio en docker-compose
-        'PORT': '5432',
+    'default': {
+        'ENGINE': 'django.db.backends.{}'.format(
+            os.getenv('DATABASE_ENGINE')
+        ),
+        'NAME': os.getenv('DATABASE_NAME'),
+        'USER': os.getenv('DATABASE_USERNAME'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST'),
+        'PORT': os.getenv('DATABASE_PORT'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -107,7 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-AR'
 
-TIME_ZONE = 'UTC'
+
+TIME_ZONE = 'America/Argentina/Mendoza'
 
 USE_I18N = True
 

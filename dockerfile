@@ -1,7 +1,7 @@
-# Usamos Python como base
-FROM python:3.12
+FROM python:3.12-slim
 
-# Establecemos el directorio de trabajo en el contenedor
+RUN mkdir /app
+
 WORKDIR /app
 
 # Previene escribir archivos pyc
@@ -11,14 +11,10 @@ ENV PYTHONUNBUFFERED=1
 
 COPY requirements.txt .
 
-# Instalamos las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiamos el resto de la app
-COPY ./app /app
+COPY app/ /app
 
-# Puerto que usará Django
 EXPOSE 8000
 
-# Comando por defecto al ejecutar el contenedor
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
