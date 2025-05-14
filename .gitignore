@@ -1,7 +1,6 @@
 # Entorno virtual
 venv/
 
-
 # Archivos de Python
 __pycache__/
 *.py[cod]
