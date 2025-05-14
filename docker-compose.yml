@@ -2,14 +2,14 @@ services:
   web:
     build: .
     volumes:
-      - app_data:/app
+      - ./app:/app
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
       DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
-      DEBUG: "${DEBUG}"
+      DEBUG: "1"
       DJANGO_LOGLEVEL: "${DJANGO_LOGLEVEL}"
       DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS}"
       DATABASE_ENGINE: "${DATABASE_ENGINE}"
@@ -20,6 +20,9 @@ services:
       DATABASE_PORT: "${DATABASE_PORT}"
     env_file:
      - .env
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      - app-network
 
   db:
     image: postgres:17
@@ -34,6 +37,8 @@ services:
       - "5432:5432"
     env_file:
       - .env
+    networks:
+      - app-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -41,14 +46,20 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
       - "8080:80"
     depends_on:
       - db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  app_data:
   db_data:
   pgadmin_data:

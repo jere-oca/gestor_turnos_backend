@@ -9,5 +9,5 @@ urlpatterns = [
     path('register/process/', views.process_register, name='register-process'),
     
     # URLs para la API
-    path('api/login/', views.api_login, name='api-login'),
+    path('api/auth/login/', views.api_login, name='api-login'),
 ] 

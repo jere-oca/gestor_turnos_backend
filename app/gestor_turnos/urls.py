@@ -16,9 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    # Opción 1: Redirección directa de la raíz al login
+    path('', RedirectView.as_view(url='login/', permanent=False)),
+    
+    # URLs principales
     path('admin/', admin.site.urls),
     path('turnos/', include('turnos.urls')),
-    path('auth/', include('authentification.urls'))
+    
+    # URLs de autenticación ahora en la raíz
+    path('', include('authentification.urls')),  # Esto incluye login/, register/, etc.
 ]
