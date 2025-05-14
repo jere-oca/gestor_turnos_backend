@@ -5,12 +5,12 @@ Este proyecto es una aplicación web para gestionar turnos
 ## 🚀 Tecnologías utilizadas
 
 - **Backend:** Python 3.12, Django 5.2
-- **Base de datos:** SQLite (desarrollo)
+- **Base de datos:** PostgreSQL
 - **Control de versiones:** Git + GitHub
 
 ## 👨‍💻 Miembros del equipo
 
-- Jeremías Ocaña
+- Jeremias Ocaña
 - Lautaro Sanz
 - Santiago Sabio
 
@@ -27,7 +27,7 @@ docker-compose up -d --build
 ```
 ### 🗃️ Aplicar migraciones de base de datos
 ```bash
-docker-compose exec web bash
+docker compose exec web bash
 python manage.py migrate
 ```
 ### 🌐 Acceder a la aplicación

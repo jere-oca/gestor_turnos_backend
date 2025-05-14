@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('authentification/', include("authentification.urls")), # 'include()' incluye URLs y configuraciones
     path('admin/', admin.site.urls),
     path('turnos/', include('turnos.urls')),
     path('auth/', include('authentification.urls'))

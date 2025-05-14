@@ -5,6 +5,7 @@ from .models import AuthUser, Persona
 from django.db import transaction
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
+from django.http import HttpResponse
 
 def login_render(request):
     if request.method == 'POST':
