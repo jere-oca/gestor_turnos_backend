@@ -4,83 +4,93 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import AuthUser, Persona
 from django.db import transaction
 from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from .forms import AuthUserForm, PersonaForm
+from django.contrib import messages
+from django.views.decorators.http import require_http_methods, require_safe, require_POST
 
-def login_render(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            # Aquí puedes autenticar y loguear al usuario si lo deseas
-            return render(request, 'login.html', {'form': form, 'success': True})
-        else:
-            return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
-    else:  # GET
-        form = AuthenticationForm()
-        return render(request, 'login.html', {'form': form})
+@require_safe
+def login_form(request):
+    """Renderiza el formulario de inicio de sesión."""
+    form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+@require_POST
+def process_login(request):
+    """Procesa el formulario de inicio de sesión web."""
+    form = AuthenticationForm(request, data=request.POST)
+    if form.is_valid():
+        # Aquí puedes autenticar y loguear al usuario si lo deseas
+        return render(request, 'login.html', {'form': form, 'success': True})
+    else:
+        return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
+
+@require_safe
+def register_form(request):
+    """Renderiza el formulario de registro."""
+    auth_form = AuthUserForm()
+    persona_form = PersonaForm()
+    return render(request, 'register.html', {
+        'auth_form': auth_form,
+        'persona_form': persona_form
+    })
+
+@require_POST
+def process_register(request):
+    """Procesa la solicitud de registro de un nuevo usuario."""
+    auth_form = AuthUserForm(request.POST)
+    persona_form = PersonaForm(request.POST)
     
-@csrf_exempt
-def persona_register(request):
-    if request.method == 'POST':
+    if auth_form.is_valid() and persona_form.is_valid():
         try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            tipo_usuario = data.get('tipo_usuario')
-            nombre = data.get('nombre')
-            apellido = data.get('apellido')
-            fecha_nacimiento = data.get('fecha_nacimiento')
-            direccion = data.get('direccion')
-            telefono = data.get('telefono')
-            especialidad = data.get('especialidad')
-            consultorio = data.get('consultorio')
-
-            if not (username and password and tipo_usuario and nombre and apellido):
-                return JsonResponse({'success': False, 'error': 'Faltan campos obligatorios.'}, status=400)
-
             with transaction.atomic():
-                auth_user = AuthUser.objects.create(
-                    username=username,
-                    password=password  # Asegúrate de guardar el hash si es necesario
-                )
-                persona = Persona.objects.create(
-                    auth_user=auth_user,
-                    tipo_usuario=tipo_usuario,
-                    nombre=nombre,
-                    apellido=apellido,
-                    fecha_nacimiento=fecha_nacimiento,
-                    direccion=direccion,
-                    telefono=telefono,
-                    especialidad=especialidad,
-                    consultorio=consultorio
-                )
-            return JsonResponse({'success': True, 'message': 'Usuario registrado correctamente.'}, status=201)
+                # Crear el usuario de autenticación
+                auth_user = auth_form.save(commit=False)
+                # Aquí deberías hashear la contraseña en un entorno de producción
+                auth_user.save()
+                
+                # Crear la persona
+                persona = persona_form.save(commit=False)
+                persona.auth_user = auth_user
+                persona.save()
+            
+            messages.success(request, 'Usuario registrado correctamente.')
+            return redirect('login')
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
+            messages.error(request, f'Error al registrar: {str(e)}')
+    else:
+        messages.error(request, 'Por favor corrige los errores en el formulario.')
+    
+    # Si hay errores, volvemos a mostrar el formulario con los datos ingresados
+    return render(request, 'register.html', {
+        'auth_form': auth_form,
+        'persona_form': persona_form
+    })
 
+@require_POST
 @csrf_exempt
-def login_view(request):
-    if request.method == 'POST':
+def api_login(request):
+    """Procesa el inicio de sesión vía API."""
+    try:
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        
         try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-            try:
-                auth_user = AuthUser.objects.get(username=username)
-                if auth_user.password == password:  # Si usas hash, compara con check_password
-                    persona  = AuthUser.objects.get(auth_user=auth_user)
-                    return JsonResponse({
-                        'success': True,
-                        'message': 'Inicio de sesión exitoso.',
-                        'tipo_usuario': persona.tipo_usuario,
-                        'nombre': persona.nombre,
-                        'apellido': persona.apellido
-                    }, status=200)
-                else:
-                    return JsonResponse({'success': False, 'error': 'Credenciales inválidas.'}, status=401)
-            except AuthUser.DoesNotExist:
-                return JsonResponse({'success': False, 'error': 'Usuario no encontrado.'}, status=404)
-        except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=400)
-    return JsonResponse({'error': 'Método no permitido'}, status=405)
+            auth_user = AuthUser.objects.get(username=username)
+            if auth_user.password == password:  # Si usas hash, compara con check_password
+                persona = Persona.objects.get(auth_user=auth_user)
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Inicio de sesión exitoso.',
+                    'tipo_usuario': persona.tipo_usuario,
+                    'nombre': persona.nombre,
+                    'apellido': persona.apellido
+                }, status=200)
+            else:
+                return JsonResponse({'success': False, 'error': 'Credenciales inválidas.'}, status=401)
+        except AuthUser.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Usuario no encontrado.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
