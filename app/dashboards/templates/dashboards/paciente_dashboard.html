@@ -1,0 +1,99 @@
+{% extends 'dashboards/base_dashboard.html' %}
+
+{% block title %}Dashboard Paciente{% endblock %}
+
+{% block page_title %}Dashboard Paciente{% endblock %}
+
+{% block sidebar_menu %}
+{{ block.super }}
+<a href="#mis-turnos">Mis Turnos</a>
+<a href="#nuevo-turno">Solicitar Turno</a>
+<a href="#historial">Mi Historial</a>
+<a href="#perfil">Mi Perfil</a>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Próximo Turno -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Próximo Turno</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <p class="text-muted">No tienes turnos programados</p>
+                        <a href="#nuevo-turno" class="btn btn-primary">Solicitar Turno</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información Personal -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Información Personal</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong>Nombre:</strong> {{ nombre }} {{ apellido }}</p>
+                            <p><strong>Tipo de Usuario:</strong> {{ tipo_usuario }}</p>
+                            <!-- Agregar más información personal aquí -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historial de Turnos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Historial de Turnos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Doctor</th>
+                                <th>Especialidad</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center">No hay turnos en el historial</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctores Disponibles -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Doctores Disponibles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <p class="text-muted text-center">No hay doctores disponibles en este momento</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

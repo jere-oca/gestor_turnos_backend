@@ -25,6 +25,7 @@ urlpatterns = [
     
     # URLs principales
     path('admin/', admin.site.urls),
+    path('dashboards/', include('dashboards.urls')),
     path('turnos/', include('turnos.urls')),
     
     # URLs de autenticación ahora en la raíz

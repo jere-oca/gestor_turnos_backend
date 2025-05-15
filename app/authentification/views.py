@@ -8,7 +8,6 @@ from django.http import HttpResponse
 from .forms import AuthUserForm, PersonaForm, CustomAuthenticationForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_safe, require_POST
-from django.contrib.auth import login
 from functools import wraps
 
 def login_required(view_func):
@@ -23,7 +22,7 @@ def login_required(view_func):
 def login_form(request):
     """Renderiza el formulario de inicio de sesión."""
     if request.session.get('auth_user_id'):
-        return redirect('home')  # Si ya está logueado, redirigir a home
+        return redirect('dashboard_redirect')
     form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
@@ -31,7 +30,7 @@ def login_form(request):
 def process_login(request):
     """Procesa el formulario de inicio de sesión web."""
     if request.session.get('auth_user_id'):
-        return redirect('home')  # Si ya está logueado, redirigir a home
+        return redirect('dashboard_redirect')
         
     form = CustomAuthenticationForm(data=request.POST)
     
@@ -47,26 +46,27 @@ def process_login(request):
             request.session['nombre'] = persona.nombre
             request.session['apellido'] = persona.apellido
             
-            return render(request, 'login_success.html', {
-                'tipo_usuario': persona.tipo_usuario,
-                'nombre': persona.nombre,
-                'apellido': persona.apellido
-            })
+            # Redirigir al dashboard correspondiente
+            return redirect('dashboard_redirect')
+            
         except Persona.DoesNotExist as e:
-            return redirect('home')
+            messages.error(request, 'Error: No se encontró la información del usuario.')
+            return redirect('login')
     else:
         return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
 
 @require_safe
 def logout(request):
     """Cierra la sesión del usuario."""
-    # Limpiar datos de sesión
     request.session.flush()
+    messages.success(request, 'Has cerrado sesión exitosamente.')
     return redirect('login')
 
 @require_safe
 def register_form(request):
     """Renderiza el formulario de registro."""
+    if request.session.get('auth_user_id'):
+        return redirect('dashboard_redirect')
     auth_form = AuthUserForm()
     persona_form = PersonaForm()
     return render(request, 'register.html', {
@@ -85,7 +85,6 @@ def process_register(request):
             with transaction.atomic():
                 # Crear el usuario de autenticación
                 auth_user = auth_form.save(commit=False)
-                # Aquí deberías hashear la contraseña en un entorno de producción
                 auth_user.save()
                 
                 # Crear la persona
@@ -93,14 +92,13 @@ def process_register(request):
                 persona.auth_user = auth_user
                 persona.save()
             
-            messages.success(request, 'Usuario registrado correctamente.')
+            messages.success(request, 'Usuario registrado correctamente. Por favor inicia sesión.')
             return redirect('login')
         except Exception as e:
             messages.error(request, f'Error al registrar: {str(e)}')
     else:
         messages.error(request, 'Por favor corrige los errores en el formulario.')
     
-    # Si hay errores, volvemos a mostrar el formulario con los datos ingresados
     return render(request, 'register.html', {
         'auth_form': auth_form,
         'persona_form': persona_form
@@ -117,7 +115,7 @@ def api_login(request):
         
         try:
             auth_user = AuthUser.objects.get(username=username)
-            if auth_user.password == password:  # Si usas hash, compara con check_password
+            if auth_user.password == password:  # En producción usar hash
                 persona = Persona.objects.get(auth_user=auth_user)
                 return JsonResponse({
                     'success': True,
@@ -131,6 +129,4 @@ def api_login(request):
         except AuthUser.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Usuario no encontrado.'}, status=404)
     except Exception as e:
-        return render(request, 'login_success.html', {
-            'tipo_usuario': persona.tipo_usuario
-        })
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
