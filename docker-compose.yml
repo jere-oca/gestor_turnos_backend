@@ -25,7 +25,7 @@ services:
     networks:
       - app-network
 
-  db: # Usar el nombre de servicio del contenedor ('db') en lugar de 'localhost' para acceder desde pgadmin
+  db: # Usar 'db' en lugar de 'localhost' como host
     image: postgres:17
     container_name: db
     restart: always
