@@ -1,5 +1,6 @@
 services:
   web:
+    container_name: app
     build: .
     volumes:
       - ./app:/app
@@ -24,13 +25,14 @@ services:
     networks:
       - app-network
 
-  db:
+  db: # Usar el nombre de servicio del contenedor ('db') en lugar de 'localhost' para acceder desde pgadmin
     image: postgres:17
+    container_name: db
     restart: always
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: "${DATABASE_USERNAME}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE_NAME}"
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -42,6 +44,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: pgadmin
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
@@ -62,4 +65,5 @@ networks:
 
 volumes:
   db_data:
+  app_data:
   pgadmin_data:
