@@ -3,28 +3,66 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import AuthUser, Persona
 from django.db import transaction
-from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import AuthUserForm, PersonaForm
+from .forms import AuthUserForm, PersonaForm, CustomAuthenticationForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_safe, require_POST
+from django.contrib.auth import login
+from functools import wraps
+
+def login_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.session.get('auth_user_id'):
+            return redirect('login')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 @require_safe
 def login_form(request):
     """Renderiza el formulario de inicio de sesión."""
-    form = AuthenticationForm()
+    if request.session.get('auth_user_id'):
+        return redirect('home')  # Si ya está logueado, redirigir a home
+    form = CustomAuthenticationForm()
     return render(request, 'login.html', {'form': form})
 
 @require_POST
 def process_login(request):
     """Procesa el formulario de inicio de sesión web."""
-    form = AuthenticationForm(request, data=request.POST)
+    if request.session.get('auth_user_id'):
+        return redirect('home')  # Si ya está logueado, redirigir a home
+        
+    form = CustomAuthenticationForm(data=request.POST)
+    
     if form.is_valid():
-        # Aquí puedes autenticar y loguear al usuario si lo deseas
-        return render(request, 'login.html', {'form': form, 'success': True})
+        auth_user = form.get_user()
+        try:
+            persona = Persona.objects.get(auth_user=auth_user)
+            
+            # Guardar datos en la sesión
+            request.session['auth_user_id'] = auth_user.id
+            request.session['username'] = auth_user.username
+            request.session['tipo_usuario'] = persona.tipo_usuario
+            request.session['nombre'] = persona.nombre
+            request.session['apellido'] = persona.apellido
+            
+            return render(request, 'login_success.html', {
+                'tipo_usuario': persona.tipo_usuario,
+                'nombre': persona.nombre,
+                'apellido': persona.apellido
+            })
+        except Persona.DoesNotExist as e:
+            return redirect('home')
     else:
         return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
+
+@require_safe
+def logout(request):
+    """Cierra la sesión del usuario."""
+    # Limpiar datos de sesión
+    request.session.flush()
+    return redirect('login')
 
 @require_safe
 def register_form(request):
@@ -93,4 +131,6 @@ def api_login(request):
         except AuthUser.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Usuario no encontrado.'}, status=404)
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+        return render(request, 'login_success.html', {
+            'tipo_usuario': persona.tipo_usuario
+        })
