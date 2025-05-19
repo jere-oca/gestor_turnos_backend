@@ -9,6 +9,7 @@ from .forms import AuthUserForm, PersonaForm, CustomAuthenticationForm
 from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_safe, require_POST
 from functools import wraps
+from django.contrib.auth import logout
 
 def login_required(view_func):
     @wraps(view_func)
@@ -55,12 +56,12 @@ def process_login(request):
     else:
         return render(request, 'login.html', {'form': form, 'error': 'Credenciales inválidas.'})
 
-@require_safe
-def logout(request):
-    """Cierra la sesión del usuario."""
-    request.session.flush()
-    messages.success(request, 'Has cerrado sesión exitosamente.')
-    return redirect('login')
+@login_required
+def logout_view(request):
+    logout(request)
+    response = redirect('login')
+    response.delete_cookie('sessionid')  # Elimina la cookie de sesión
+    return response
 
 @require_safe
 def register_form(request):

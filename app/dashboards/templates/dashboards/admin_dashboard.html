@@ -104,12 +104,25 @@
                                 <th>Doctor</th>
                                 <th>Paciente</th>
                                 <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td colspan="4" class="text-center">No hay turnos programados</td>
                             </tr>
+                            {% for turno in turnos %}
+                            <tr>
+                                <td>{{ turno.fecha }}</td>
+                                <td>{{ turno.doctor }}</td>
+                                <td>{{ turno.paciente }}</td>
+                                <td>{{ turno.estado }}</td>
+                                <td>
+                                    <a href="{% url 'eliminar_turno' turno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                                    <a href="{% url 'modificar_turno' turno.id %}" class="btn btn-warning btn-sm">Modificar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

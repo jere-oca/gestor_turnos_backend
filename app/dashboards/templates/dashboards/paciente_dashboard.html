@@ -71,6 +71,18 @@
                             <tr>
                                 <td colspan="5" class="text-center">No hay turnos en el historial</td>
                             </tr>
+                            {% for turno in turnos %}
+                            <tr>
+                                <td>{{ turno.fecha }}</td>
+                                <td>{{ turno.doctor }}</td>
+                                <td>{{ turno.especialidad }}</td>
+                                <td>{{ turno.estado }}</td>
+                                <td>
+                                    <a href="{% url 'eliminar_turno' turno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                                    <a href="{% url 'modificar_turno' turno.id %}" class="btn btn-warning btn-sm">Modificar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
