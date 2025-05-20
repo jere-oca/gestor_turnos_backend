@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie
 from .models import AuthUser, Persona
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -105,8 +105,16 @@ def process_register(request):
         'persona_form': persona_form
     })
 
-@require_POST
-@csrf_exempt
+def api_login_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.session.get('auth_user_id'):
+            return JsonResponse({'error': 'No autorizado'}, status=401)
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@ensure_csrf_cookie
+@require_http_methods(["POST"])
 def api_login(request):
     """Procesa el inicio de sesión vía API."""
     try:
@@ -118,6 +126,14 @@ def api_login(request):
             auth_user = AuthUser.objects.get(username=username)
             if auth_user.password == password:  # En producción usar hash
                 persona = Persona.objects.get(auth_user=auth_user)
+                
+                # Set session data
+                request.session['auth_user_id'] = auth_user.id
+                request.session['username'] = auth_user.username
+                request.session['tipo_usuario'] = persona.tipo_usuario
+                request.session['nombre'] = persona.nombre
+                request.session['apellido'] = persona.apellido
+                
                 return JsonResponse({
                     'success': True,
                     'message': 'Inicio de sesión exitoso.',
@@ -131,3 +147,68 @@ def api_login(request):
             return JsonResponse({'success': False, 'error': 'Usuario no encontrado.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@api_login_required
+@require_http_methods(["POST"])
+def api_logout(request):
+    """Cierra la sesión del usuario."""
+    logout(request)
+    response = JsonResponse({'success': True, 'message': 'Sesión cerrada exitosamente'})
+    response.delete_cookie('sessionid')
+    return response
+
+@ensure_csrf_cookie
+@require_http_methods(["POST"])
+def api_register(request):
+    """Procesa el registro de un nuevo usuario vía API."""
+    try:
+        data = json.loads(request.body)
+        username = data.get('username')
+        password = data.get('password')
+        nombre = data.get('nombre')
+        apellido = data.get('apellido')
+        tipo_usuario = data.get('tipo_usuario')
+        
+        if not all([username, password, nombre, apellido, tipo_usuario]):
+            return JsonResponse({
+                'success': False,
+                'error': 'Todos los campos son requeridos'
+            }, status=400)
+        
+        try:
+            with transaction.atomic():
+                # Crear el usuario de autenticación
+                auth_user = AuthUser.objects.create(
+                    username=username,
+                    password=password  # En producción usar hash
+                )
+                
+                # Crear la persona
+                Persona.objects.create(
+                    auth_user=auth_user,
+                    nombre=nombre,
+                    apellido=apellido,
+                    tipo_usuario=tipo_usuario
+                )
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Usuario registrado correctamente'
+            }, status=201)
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error al registrar usuario: {str(e)}'
+            }, status=400)
+            
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Datos JSON inválidos'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

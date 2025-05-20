@@ -45,4 +45,43 @@ CORS_ALLOW_CREDENTIALS = True
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",  # React development server
-] 
+    "http://127.0.0.1:3000",
+]
+
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# Session settings
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# Additional CORS settings
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Security settings
+ALLOWED_HOSTS = ['backend', 'localhost', '127.0.0.1']
+DEBUG = True  # Set to False in production
+
+# Disable Django's admin interface
+ADMIN_ENABLED = False 
