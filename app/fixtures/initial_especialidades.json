@@ -1,0 +1,26 @@
+[
+    {
+        "model": "turnos.especialidad",
+        "pk": 2,
+        "fields": {
+            "nombre": "Pediatría",
+            "descripcion": "Especialidad médica que se ocupa de la salud de los niños"
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 3,
+        "fields": {
+            "nombre": "Ginecología",
+            "descripcion": "Especialidad médica que se ocupa de la salud del sistema reproductor femenino"
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 4,
+        "fields": {
+            "nombre": "Traumatología",
+            "descripcion": "Especialidad médica que se ocupa de las lesiones del sistema musculoesquelético"
+        }
+    }
+] 

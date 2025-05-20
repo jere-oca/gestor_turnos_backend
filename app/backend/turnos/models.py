@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from authentification.models import AuthUser
 
 class Especialidad(models.Model):
     nombre = models.CharField(max_length=100)
@@ -9,28 +9,28 @@ class Especialidad(models.Model):
         return self.nombre
 
 class Medico(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad, on_delete=models.CASCADE)
     matricula = models.CharField(max_length=20, unique=True)
     telefono = models.CharField(max_length=20)
 
     def __str__(self):
-        return f"Dr. {self.user.get_full_name()} - {self.especialidad}"
+        return f"Dr. {self.user.username} - {self.especialidad}"
 
 class Paciente(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
     dni = models.CharField(max_length=20, unique=True)
     fecha_nacimiento = models.DateField()
     telefono = models.CharField(max_length=20)
     direccion = models.TextField()
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - DNI: {self.dni}"
+        return f"{self.user.username} - DNI: {self.dni}"
 
 class Turno(models.Model):
     fecha = models.DateField()  # La fecha del turno
     hora = models.TimeField()  # La hora del turno
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)  # Relación con el modelo User
+    usuario = models.ForeignKey(AuthUser, on_delete=models.CASCADE)  # Relación con el modelo AuthUser
     medico = models.ForeignKey(Medico, on_delete=models.CASCADE, null=True, blank=True)
     paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, null=True, blank=True)
     estado = models.CharField(max_length=20, default='pendiente')  # Estado del turno (pendiente, confirmado, etc.)

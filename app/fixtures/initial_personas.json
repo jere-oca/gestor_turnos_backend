@@ -1,0 +1,32 @@
+[
+    {
+        "model": "authentification.persona",
+        "pk": 2,
+        "fields": {
+            "auth_user": 2,
+            "tipo_usuario": "doctor",
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "fecha_nacimiento": "1985-01-01",
+            "direccion": "Calle Doctor 456",
+            "telefono": "261-1234567",
+            "especialidad": "Clínica Médica",
+            "consultorio": "1"
+        }
+    },
+    {
+        "model": "authentification.persona",
+        "pk": 3,
+        "fields": {
+            "auth_user": 3,
+            "tipo_usuario": "paciente",
+            "nombre": "María",
+            "apellido": "González",
+            "fecha_nacimiento": "1990-01-01",
+            "direccion": "Calle Principal 123",
+            "telefono": "261-7654321",
+            "especialidad": null,
+            "consultorio": null
+        }
+    }
+] 

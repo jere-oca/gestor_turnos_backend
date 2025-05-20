@@ -30,7 +30,7 @@ services:
              cd /app/backend && 
              python manage.py makemigrations --noinput &&
              python manage.py migrate --noinput &&
-             python manage.py loaddata initial_users initial_especialidades initial_medicos initial_pacientes &&
+             python manage.py loaddata /app/backend/fixtures/initial_users.json /app/backend/fixtures/initial_personas.json /app/backend/fixtures/initial_especialidades.json /app/backend/fixtures/initial_medicos.json /app/backend/fixtures/initial_pacientes.json &&
              python manage.py collectstatic --noinput &&
              python manage.py runserver 0.0.0.0:8000"
     networks:
