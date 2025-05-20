@@ -2,9 +2,13 @@ services:
   web:
     build: .
     volumes:
-      - ./app:/app
+      - ./app/backend:/app/backend
+      - ./app/frontend:/app/frontend
+      - static_volume:/app/backend/staticfiles
+      - media_volume:/app/backend/media
     ports:
       - "8000:8000"
+      - "3000:3000"
     depends_on:
       - db
     environment:
@@ -18,9 +22,17 @@ services:
       DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
       DATABASE_HOST: "${DATABASE_HOST}"
       DATABASE_PORT: "${DATABASE_PORT}"
+      REACT_APP_API_URL: "http://localhost:8000"
     env_file:
      - .env
-    command: python manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "cd /app/frontend && npm install && npm start &
+             cd /app/backend && 
+             python manage.py makemigrations --noinput &&
+             python manage.py migrate --noinput &&
+             python manage.py loaddata initial_users initial_especialidades initial_medicos initial_pacientes &&
+             python manage.py collectstatic --noinput &&
+             python manage.py runserver 0.0.0.0:8000"
     networks:
       - app-network
 
@@ -47,6 +59,8 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+      PGADMIN_CONFIG_UPGRADE_CHECK_ENABLED: 'False'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
@@ -63,3 +77,5 @@ networks:
 volumes:
   db_data:
   pgadmin_data:
+  static_volume:
+  media_volume:

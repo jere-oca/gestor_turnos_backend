@@ -1,0 +1,13 @@
+[
+    {
+        "model": "turnos.paciente",
+        "pk": 1,
+        "fields": {
+            "user": 3,
+            "dni": "12345678",
+            "fecha_nacimiento": "1990-01-01",
+            "telefono": "261-7654321",
+            "direccion": "Calle Principal 123"
+        }
+    }
+] 
