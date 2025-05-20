@@ -212,3 +212,11 @@ def api_register(request):
             'success': False,
             'error': str(e)
         }, status=500)
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    """
+    Esta vista devuelve una respuesta simple con un token CSRF.
+    Usa @ensure_csrf_cookie para forzar al navegador a establecer la cookie CSRF.
+    """
+    return JsonResponse({'success': True, 'message': 'CSRF cookie set'})

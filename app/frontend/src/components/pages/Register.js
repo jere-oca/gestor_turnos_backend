@@ -18,9 +18,7 @@ function Register() {
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
-    }
-
-    try {
+    }    try {
       const response = await axios.post('/api/register/', {
         username,
         password,
@@ -33,7 +31,8 @@ function Register() {
         navigate('/login');
       }
     } catch (err) {
-      setError('Error al registrar usuario');
+      console.error('Error al registrar:', err.response ? err.response.data : err.message);
+      setError(err.response?.data?.error || 'Error al registrar usuario');
     }
   };
 

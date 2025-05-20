@@ -9,8 +9,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
+    e.preventDefault();    try {
       const response = await axios.post('/api/login/', {
         username,
         password
@@ -20,7 +19,8 @@ function Login() {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError('Usuario o contraseña incorrectos');
+      console.error('Error de login:', err.response ? err.response.data : err.message);
+      setError(err.response?.data?.error || 'Usuario o contraseña incorrectos');
     }
   };
 
