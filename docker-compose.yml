@@ -16,11 +16,11 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin-config/servers.json:/pgadmin4/servers.json
     ports:
       - "8080:80"
     depends_on:
@@ -34,7 +34,6 @@ services:
     build:
       context: ./app
       dockerfile: ../Dockerfile.backend
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app:/app
     ports:
