@@ -1,0 +1,328 @@
+/* Estilos generales para la sección de turnos */
+.turnos-main {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 60px); /* Altura total menos el header */
+}
+
+.turnos-content {
+  flex: 1;
+}
+
+.turnos-container, .crear-turno-container, .editar-turno-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 0;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.no-turnos {
+  text-align: center;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.empty-message {
+  color: #666;
+  font-style: italic;
+}
+
+/* Botones */
+.btn-crear, .btn-editar, .btn-cancelar, .btn-guardar {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-right: 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.btn-crear {
+  background-color: #28a745;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.btn-crear:hover {
+  background-color: #218838;
+}
+
+.btn-editar {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-editar:hover {
+  background-color: #0069d9;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
+
+.btn-cancelar:hover {
+  background-color: #c82333;
+}
+
+.btn-guardar {
+  background-color: #28a745;
+  color: white;
+  border: none;
+}
+
+.btn-guardar:hover {
+  background-color: #218838;
+}
+
+.btn-guardar:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Tabla de turnos */
+.turnos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.turnos-table th, .turnos-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.turnos-table th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+}
+
+.turnos-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+.turnos-table .acciones {
+  display: flex;
+  gap: 10px;
+}
+
+/* Estados de turnos */
+.badge-pendiente, .badge-confirmado, .badge-cancelado {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.badge-pendiente {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.badge-confirmado {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-cancelado {
+  background-color: #dc3545;
+  color: white;
+}
+
+.estado-cancelado {
+  opacity: 0.6;
+}
+
+/* Formularios */
+.turno-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+/* Estilos para el detalle de turno */
+.detalle-turno-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.turno-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.turno-header {
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.turno-body {
+  padding: 20px;
+}
+
+.turno-detail {
+  margin-bottom: 16px;
+  display: flex;
+  border-bottom: 1px solid #f1f1f1;
+  padding-bottom: 8px;
+}
+
+.turno-detail .label {
+  font-weight: bold;
+  width: 120px;
+  color: #495057;
+}
+
+.turno-detail .value {
+  flex: 1;
+}
+
+.turno-footer {
+  padding: 16px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-volver {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: #5a6268;
+}
+
+/* Media queries para responsividad */
+@media screen and (max-width: 768px) {
+  .turnos-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form-buttons button, .turno-footer button {
+    width: 100%;
+  }
+  
+  .turno-footer {
+    flex-direction: column;
+  }
+  
+  .turno-detail {
+    flex-direction: column;
+  }
+  
+  .turno-detail .label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+}
