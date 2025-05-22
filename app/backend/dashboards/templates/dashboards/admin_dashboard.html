@@ -1,0 +1,172 @@
+{% extends 'dashboards/base_dashboard.html' %}
+
+{% block title %}Dashboard Administrativo{% endblock %}
+
+{% block page_title %}Dashboard Administrativo{% endblock %}
+
+{% block sidebar_menu %}
+{{ block.super }}
+<a href="#usuarios">Gestionar Usuarios</a>
+<a href="#turnos">Gestionar Turnos</a>
+<a href="#doctores">Gestionar Doctores</a>
+<a href="#reportes">Reportes</a>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Estadísticas Generales -->
+        <div class="col-md-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Estadísticas Generales</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Pacientes</h5>
+                                    <h2>0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Doctores</h5>
+                                    <h2>0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Turnos Hoy</h5>
+                                    <h2>0</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Turnos Pendientes</h5>
+                                    <h2>0</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Últimos Usuarios Registrados -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Últimos Usuarios Registrados</h5>
+                    <button class="btn btn-primary btn-sm">Ver Todos</button>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">No hay usuarios registrados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximos Turnos -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Próximos Turnos</h5>
+                    <button class="btn btn-primary btn-sm">Ver Todos</button>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Doctor</th>
+                                <th>Paciente</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4" class="text-center">No hay turnos programados</td>
+                            </tr>
+                            {% for turno in turnos %}
+                            <tr>
+                                <td>{{ turno.fecha }}</td>
+                                <td>{{ turno.doctor }}</td>
+                                <td>{{ turno.paciente }}</td>
+                                <td>{{ turno.estado }}</td>
+                                <td>
+                                    <a href="{% url 'eliminar_turno' turno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                                    <a href="{% url 'modificar_turno' turno.id %}" class="btn btn-warning btn-sm">Modificar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Acciones Rápidas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-primary w-100">
+                                <i class="fas fa-user-plus"></i> Nuevo Usuario
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-success w-100">
+                                <i class="fas fa-calendar-plus"></i> Nuevo Turno
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-info w-100">
+                                <i class="fas fa-user-md"></i> Nuevo Doctor
+                            </a>
+                        </div>
+                        <div class="col-md-3 col-sm-6 mb-3">
+                            <a href="#" class="btn btn-warning w-100">
+                                <i class="fas fa-file-alt"></i> Generar Reporte
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+{% endblock %} 

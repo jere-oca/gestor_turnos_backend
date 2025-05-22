@@ -1,0 +1,12 @@
+[
+    {
+        "model": "turnos.medico",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "especialidad": 1,
+            "matricula": "12345",
+            "telefono": "261-1234567"
+        }
+    }
+] 

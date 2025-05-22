@@ -1,0 +1,97 @@
+{% extends 'dashboards/base_dashboard.html' %}
+
+{% block title %}Dashboard Doctor{% endblock %}
+
+{% block page_title %}Dashboard Doctor{% endblock %}
+
+{% block sidebar_menu %}
+{{ block.super }}
+<a href="#mis-turnos">Mis Turnos</a>
+<a href="#mis-pacientes">Mis Pacientes</a>
+<a href="#horarios">Gestionar Horarios</a>
+<a href="#historial">Historial Médico</a>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Resumen de Turnos -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Turnos del Día</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <!-- Aquí se listarán los turnos -->
+                        <p class="text-muted">No hay turnos programados para hoy.</p>
+                    </div>
+                    <a href="{% url 'crear_turno' %}" class="btn btn-primary mt-3">Crear Turno</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Estadísticas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <h6>Pacientes Totales</h6>
+                            <h2>0</h2>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <h6>Turnos Pendientes</h6>
+                            <h2>0</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Próximos Turnos -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Próximos Turnos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center">No hay turnos próximos</td>
+                            </tr>
+                            {% for turno in turnos %}
+                            <tr>
+                                <td>{{ turno.fecha }}</td>
+                                <td>{{ turno.hora }}</td>
+                                <td>{{ turno.paciente }}</td>
+                                <td>{{ turno.estado }}</td>
+                                <td>
+                                    <a href="{% url 'eliminar_turno' turno.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                                    <a href="{% url 'modificar_turno' turno.id %}" class="btn btn-warning btn-sm">Modificar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

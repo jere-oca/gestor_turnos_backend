@@ -1,0 +1,18 @@
+[
+    {
+        "model": "authentification.authuser",
+        "pk": 2,
+        "fields": {
+            "username": "medico1",
+            "password": "pbkdf2_sha256$600000$hX8M3Nt5X9K2$+X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2="
+        }
+    },
+    {
+        "model": "authentification.authuser",
+        "pk": 3,
+        "fields": {
+            "username": "paciente1",
+            "password": "pbkdf2_sha256$600000$hX8M3Nt5X9K2$+X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2X9K2="
+        }
+    }
+] 

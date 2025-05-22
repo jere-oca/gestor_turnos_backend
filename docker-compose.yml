@@ -1,58 +1,28 @@
-services:
-  web:
-    container_name: app
-    build: .
-    volumes:
-      - ./app:/app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
-    restart: unless-stopped
-    environment:
-      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
-      DEBUG: "1"
-      DJANGO_LOGLEVEL: "${DJANGO_LOGLEVEL}"
-      DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS}"
-      DATABASE_ENGINE: "${DATABASE_ENGINE}"
-      DATABASE_NAME: "${DATABASE_NAME}"
-      DATABASE_USERNAME: "${DATABASE_USERNAME}"
-      DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
-      DATABASE_HOST: "${DATABASE_HOST}"
-      DATABASE_PORT: "${DATABASE_PORT}"
-    env_file:
-     - .env
-    command: python manage.py runserver 0.0.0.0:8000
-    networks:
-      - app-network
 
-  db: # Usar 'db' en lugar de 'localhost' como host
-    image: postgres:17
-    container_name: db
-    restart: unless-stopped
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
     environment:
-      POSTGRES_USER: "${DATABASE_USERNAME}"
-      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
-      POSTGRES_DB: "${DATABASE_NAME}"
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    env_file:
-      - .env
     networks:
-      - app-network
-
+      - app-network  
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin
-    restart: unless-stopped
+
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin-config/servers.json:/pgadmin4/servers.json
     ports:
       - "8080:80"
     depends_on:
@@ -60,11 +30,48 @@ services:
     networks:
       - app-network
 
+
+
+  backend:
+    build:
+      context: ./app
+      dockerfile: ../Dockerfile.backend
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"   
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=gestor_turnos.settings
+    env_file:
+      - ./app/.env
+    networks:
+      - app-network
+
+
+  frontend:
+    build:
+      context: ./app/frontend
+      dockerfile: ../../Dockerfile.frontend
+    volumes:
+      - ./app/frontend:/app/frontend
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
 
+
 volumes:
-  db_data:
-  app_data:
+
+  postgres_data:
+
   pgadmin_data:
