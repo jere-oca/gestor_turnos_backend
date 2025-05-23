@@ -15,13 +15,13 @@ echo ""
 # 2. Generar datos de prueba
 echo "Generando datos de prueba..."
 echo "Esto puede tardar varios minutos dependiendo de la cantidad de registros."
-python manage.py generate_auth_users --cantidad 100 --batch 10
+python manage.py generate_auth_users --cantidad 5000 --batch 100
 echo "✅ Datos de prueba generados"
 echo ""
 
 # 3. Realizar benchmarks iniciales (sin índices adicionales)
 echo "Realizando benchmarks iniciales (sin índices adicionales)..."
-python manage.py benchmark_queries --queries 100
+python manage.py benchmark_queries --queries 5000
 echo "✅ Benchmarks iniciales completados"
 echo ""
 
@@ -33,13 +33,13 @@ echo ""
 
 # 5. Realizar benchmarks después de añadir índices
 echo "Realizando benchmarks con índices..."
-python manage.py benchmark_queries --queries 100
+python manage.py benchmark_queries --queries 5000
 echo "✅ Benchmarks con índices completados"
 echo ""
 
 # 6. Exportar datos a CSV para análisis externos
 echo "Exportando datos a CSV..."
-python manage.py export_auth_users_to_csv --cantidad 100 --output csv_exports
+python manage.py export_auth_users_to_csv --cantidad 5000 --output csv_exports
 echo "✅ Datos exportados a CSV"
 echo ""
 

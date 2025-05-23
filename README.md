@@ -32,5 +32,14 @@ python manage.py migrate
 ```
 ### 🌐 Acceder a la aplicación
 ```bash
-http://localhost:8000/
+http://localhost:3000/
+```
+
+
+### Realizar tests de indices 
+
+```bash
+
+docker compose exec backend /bin/bash /app/backend/run_performance_tests.sh
+
 ```
