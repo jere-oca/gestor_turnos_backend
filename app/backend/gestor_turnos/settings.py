@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'turnos',
     'dashboards',
+    'datagen_utils',  # Renamed from faker
 ]
 
 MIDDLEWARE = [

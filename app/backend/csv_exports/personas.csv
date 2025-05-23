@@ -1,0 +1,101 @@
+auth_user_id,tipo_usuario,nombre,apellido,fecha_nacimiento,direccion,telefono,especialidad,consultorio
+1,administrativo,Agustina,Osorio,1972-08-24,"Callejón de Úrsula Barroso 28, Zamora, 27940",+34 888 536 473,,
+2,doctor,Lisandro,Villalobos,2005-09-03,"Plaza Anastasia Santamaría 92 Apt. 73 , Teruel, 20283",+34 985 592 440,Endocrinología,Consultorio 1
+3,paciente,María Del Carmen,Nebot,1975-07-29,"C. Gastón Cózar 87 Puerta 4 , Alicante, 42675",+34981990077,,
+4,administrativo,Ainara,Llanos,1992-06-16,"Rambla de Lucio Camacho 148, Ávila, 23967",+34 982011930,,
+5,doctor,Charo,Carbó,2001-11-21,"Vial de Cruz Carnero 426, Almería, 45310",+34842 440 738,Gastroenterología,Consultorio 6
+6,doctor,Jose,Alfaro,1982-06-24,"Plaza de Petrona Fuster 76 Piso 6 , Valencia, 01083",+34 806 134 361,Oftalmología,Consultorio 7
+7,administrativo,Santiago,Carbajo,1980-11-22,"Calle Ismael Paredes 38, Huesca, 41111",+34 806771558,,
+8,administrativo,Rosaura,Quero,1982-10-02,"Paseo de Quique Vigil 47, Teruel, 24744",+34922 106 046,,
+9,administrativo,Leopoldo,Ferrero,1978-04-12,"Paseo de Eleuterio Colomer 76 Apt. 64 , Guipúzcoa, 51632",+34877 09 70 48,,
+10,doctor,Ángel,Ibarra,1947-01-27,"Callejón de Mariana Juárez 816, Teruel, 23403",+34 715 10 31 88,Urología,Consultorio 8
+11,administrativo,Silvestre,Beltran,1984-01-05,"Acceso Samuel Abascal 55 Apt. 37 , Teruel, 10246",+34883 022 478,,
+12,administrativo,Verónica,Alcázar,1950-07-21,"Calle Elvira Fuster 5 Piso 9 , Baleares, 36957",+34976719728,,
+13,paciente,Asunción,Mascaró,2001-11-25,"Avenida Eva María Borrell 13 Piso 8 , Baleares, 16147",+34 945 656 157,,
+14,administrativo,Dora,Nuñez,1984-07-08,"Pasaje Anselma Gargallo 97, Baleares, 30666",+34888144903,,
+15,administrativo,Candelario,Abellán,2003-04-23,"C. de José Ángel Velázquez 70, Huelva, 41310",+34 649 647 633,,
+16,administrativo,Candela,Vargas,1950-11-07,"Glorieta Petrona Abascal 79 Apt. 09 , Murcia, 45880",+34 848 73 11 07,,
+17,doctor,Onofre,Larrañaga,1982-12-19,"Alameda de Manola Gascón 91 Apt. 07 , Guipúzcoa, 40784",+34 978 91 15 99,Traumatología,Consultorio 10
+18,doctor,Anastasio,Riquelme,1975-05-05,"Pasaje Óscar Palma 409 Piso 6 , Segovia, 38422",+34 983 67 82 01,Oftalmología,Consultorio 3
+19,doctor,Anastasio,Roura,1998-04-24,"Alameda Dionisia Luís 11, Soria, 40143",+34 983 49 02 97,Psiquiatría,Consultorio 6
+20,doctor,Paola,Castellanos,1980-09-21,"Vial Catalina Guitart 467 Apt. 89 , Segovia, 14777",+34901 302 398,Cardiología,Consultorio 5
+21,doctor,Sancho,Franch,1964-09-28,"Plaza Cecilio Montalbán 22, Córdoba, 51357",+34617 35 44 49,Urología,Consultorio 5
+22,paciente,Azahara,Carlos,1991-11-04,"Pasadizo Jennifer Canals 25, Palencia, 30444",+34 927 41 94 69,,
+23,administrativo,Leandra,Aliaga,1962-02-23,"Urbanización Rufina Cabañas 78, Albacete, 37426",+34868 11 03 84,,
+24,paciente,Dionisio,Alfaro,1981-07-28,"Callejón de Dionisio Checa 25 Puerta 2 , Córdoba, 18433",+34844 649 058,,
+25,administrativo,Aurelio,Castells,1966-10-23,"Glorieta Américo Salazar 92 Puerta 5 , Cáceres, 48243",+34952 248 683,,
+26,doctor,Wálter,Sanz,1994-08-25,"Calle de Gisela Aragón 4 Puerta 6 , Zamora, 29746",+34 985 85 58 98,Ginecología,Consultorio 3
+27,paciente,Obdulia,González,1965-11-10,"Cuesta de Genoveva Ricart 79, Cuenca, 37156",+34 980 454 793,,
+28,doctor,Custodia,Vila,1983-12-05,"C. Dan Tena 71 Puerta 6 , Castellón, 25665",+34944 122 475,Gastroenterología,Consultorio 4
+29,paciente,Paola,Atienza,2003-04-04,"Callejón Diego Comas 34 Piso 9 , Huelva, 04610",+34803 90 46 63,,
+30,doctor,Jerónimo,Alcaraz,1954-10-24,"Alameda Amanda Alemany 19 Apt. 93 , Burgos, 35416",+34 821 45 99 84,Endocrinología,Consultorio 5
+31,paciente,Ramiro,Bosch,1984-09-11,"C. Lara Alarcón 10, Cantabria, 30652",+34 843 809 850,,
+32,doctor,Osvaldo,Gámez,1985-03-02,"Alameda de Román Boix 14, La Rioja, 42371",+34 920 84 06 61,Pediatría,Consultorio 2
+33,doctor,Gilberto,Vidal,1966-08-06,"C. Octavia Lasa 72, Cádiz, 25600",+34842 50 51 98,Oftalmología,Consultorio 6
+34,paciente,Jose Manuel,Arce,1984-01-01,"Callejón de Isaura Almazán 85, Almería, 37374",+34987 92 59 60,,
+35,paciente,Paloma,Donaire,2003-05-30,"Cañada Eusebia Alcolea 6 Apt. 06 , Segovia, 02746",+34 872 82 58 46,,
+36,administrativo,Vinicio,Borrell,1945-05-31,"Cuesta Raimundo Colom 6, Sevilla, 31806",+34 975 18 27 33,,
+37,administrativo,Jerónimo,Jove,1952-06-09,"Cañada de Darío Acedo 2 Apt. 26 , La Rioja, 13424",+34 945 41 85 21,,
+38,administrativo,Amalia,Lloret,1998-07-25,"Paseo de Bernarda Jáuregui 3 Piso 5 , La Rioja, 51229",+34846 28 73 00,,
+39,administrativo,Nadia,Conde,1997-07-21,"Alameda María Del Carmen Álvaro 84, Lugo, 43404",+34 900 36 83 79,,
+40,administrativo,Manuel,Iborra,1985-11-30,"Via de Loreto Cabezas 6, Valladolid, 44263",+34986597027,,
+41,paciente,Constanza,Batalla,1974-11-17,"Callejón de Brunilda Borrell 557, Soria, 35446",+34 947 01 37 14,,
+42,paciente,José,Olmedo,1952-05-24,"Vial de Ligia Santamaria 52, Las Palmas, 02695",+34826 16 24 76,,
+43,doctor,Vicente,Galvez,1963-10-31,"Vial de Simón Casanovas 184, Ávila, 34638",+34 947954066,Cardiología,Consultorio 10
+44,paciente,Lilia,Quesada,1966-09-19,"Paseo de Nerea Matas 3, Málaga, 19001",+34 883857659,,
+45,administrativo,Agapito,Sedano,1993-12-06,"Vial Matilde Murillo 72, Barcelona, 31629",+34 827 648 807,,
+46,administrativo,Paulino,Puerta,1991-09-10,"Avenida Amor Gomila 1 Piso 2 , Cáceres, 39803",+34924 310 196,,
+47,doctor,Efraín,Cuesta,1969-12-29,"Paseo Calisto Roig 4 Piso 8 , Almería, 41061",+34807 09 02 92,Dermatología,Consultorio 5
+48,administrativo,Sancho,Córdoba,1974-09-25,"Cañada Adriana Solana 81, La Rioja, 25875",+34826 94 47 43,,
+49,paciente,Ángeles,Barriga,2007-03-27,"Pasadizo de Joaquina Peña 92 Puerta 3 , Cuenca, 50559",+34 876 881 643,,
+50,paciente,Ainara,Rodriguez,1979-06-16,"Glorieta de Aníbal Díaz 48 Apt. 47 , Burgos, 17982",+34 849 37 72 53,,
+51,paciente,Marcia,Castells,1984-02-20,"Ronda Guillermo Carpio 69 Piso 4 , Pontevedra, 39304",+34 843741200,,
+52,paciente,Emiliano,Cantón,1966-01-18,"Calle Emigdio Garay 95 Apt. 62 , Soria, 10472",+34920 43 50 33,,
+53,paciente,Candelas,Gordillo,1965-03-07,"Rambla Tere Quesada 53 Piso 4 , Lugo, 45345",+34 974 205 613,,
+54,administrativo,Priscila,Barón,1967-10-22,"Vial Dionisia Aguado 56 Piso 2 , Almería, 06092",+34 887325519,,
+55,administrativo,Valentina,Roca,1985-10-22,"C. Eva María Roig 82 Piso 0 , Salamanca, 29616",+34 849 86 13 58,,
+56,administrativo,Albino,Bolaños,1990-08-12,"C. de Blanca Verdejo 62, Álava, 43241",+34 972 34 03 58,,
+57,administrativo,Asunción,Cuevas,1999-07-03,"Ronda Joaquina Pagès 78 Apt. 00 , Las Palmas, 19407",+34842074701,,
+58,paciente,Gaspar,Vergara,1995-04-05,"Pasadizo de Margarita Ramírez 87 Puerta 9 , Ourense, 13867",+34928133408,,
+59,paciente,Elba,Esparza,2005-07-17,"Ronda Herminia Baena 90 Piso 0 , Girona, 38069",+34887 121 999,,
+60,doctor,Patricio,Solé,1991-07-15,"Calle Eric Villena 77, Ourense, 25941",+34 823 868 640,Oftalmología,Consultorio 9
+61,paciente,Lucía,Berrocal,1989-03-17,"Glorieta Nidia Manzanares 39 Piso 9 , Lugo, 14697",+34826806797,,
+62,doctor,Elpidio,Codina,1971-11-11,"Alameda de Ámbar Salinas 772 Puerta 5 , Santa Cruz de Tenerife, 35769",+34 925888430,Ginecología,Consultorio 7
+63,doctor,René,Montero,1958-08-25,"Pasadizo Etelvina Mata 86, Valladolid, 48403",+34 822 85 30 97,Dermatología,Consultorio 10
+64,administrativo,Juan,Ramos,1961-02-28,"Pasadizo Dionisia Caparrós 135, Melilla, 24664",+34882 73 14 59,,
+65,administrativo,Urbano,Casas,1974-08-31,"Acceso de Adriana Ribes 18 Apt. 67 , Palencia, 44543",+34 888463628,,
+66,paciente,Ámbar,Amat,1956-07-17,"Paseo Ariel Cruz 31 Apt. 72 , Pontevedra, 01679",+34 715 85 15 76,,
+67,paciente,Gervasio,Rey,1945-07-10,"Cuesta Dorotea Company 80, Cádiz, 26729",+34943 48 20 99,,
+68,administrativo,Ruperto,Alemany,1968-08-10,"Cuesta de Andrés Felipe Poza 194, Asturias, 14687",+34 880527624,,
+69,doctor,Inmaculada,Guzman,1952-04-18,"Callejón Úrsula Aragón 8 Apt. 73 , Cádiz, 14930",+34880 56 31 65,Ginecología,Consultorio 9
+70,administrativo,Fabiana,Campoy,1994-11-22,"Pasadizo Marciano Morante 54, Almería, 02950",+34 974 610 821,,
+71,administrativo,Primitiva,Bermúdez,1988-08-25,"Pasadizo de Celestina Reguera 48 Piso 3 , Ourense, 36249",+34 806 13 72 46,,
+72,doctor,Sabas,Valderrama,1965-08-04,"Alameda de Matías Lobato 63 Puerta 2 , Teruel, 51015",+34932 967 163,Traumatología,Consultorio 7
+73,doctor,Calixta,Guerra,1989-11-29,"Acceso Petrona Jerez 4, Asturias, 06148",+34 923 628 342,Endocrinología,Consultorio 6
+74,paciente,Eusebio,Amorós,1968-03-22,"Cuesta Guiomar Santos 8 Apt. 54 , Barcelona, 22601",+34 877 52 78 24,,
+75,paciente,Jimena,Castells,2004-09-05,"Urbanización Carmelita Roca 7, Baleares, 30434",+34880 971 400,,
+76,administrativo,Guadalupe,Espada,2005-03-19,"Callejón Reyes Álvarez 30, Las Palmas, 42246",+34821 28 75 06,,
+77,doctor,Obdulia,Borrell,1984-10-19,"Paseo de Amado Carbajo 1, Salamanca, 48259",+34 884 614 992,Pediatría,Consultorio 8
+78,paciente,Narcisa,Patiño,1949-06-10,"C. de Carina Bou 25, Sevilla, 40423",+34 926811500,,
+79,administrativo,Ainara,Ballester,1986-10-04,"Alameda Edu Oliver 1 Piso 5 , Jaén, 35558",+34 710873968,,
+80,doctor,Marianela,Simó,1969-01-08,"Cuesta Diego Castrillo 20, Huesca, 35558",+34928085786,Ginecología,Consultorio 3
+81,administrativo,Mireia,Azcona,1966-08-09,"Alameda Clarisa Casals 4 Apt. 73 , Huelva, 40504",+34843 52 56 22,,
+82,paciente,Ricardo,Barrena,1989-06-22,"Pasaje Aitor Zurita 50, Lugo, 20707",+34987 99 09 86,,
+83,doctor,Rosenda,Cadenas,1992-10-26,"Plaza Nélida Aguilar 62, Girona, 49516",+34 921 15 81 75,Cardiología,Consultorio 7
+84,paciente,Olivia,Pedraza,2001-04-03,"Urbanización de Angelino Velasco 32, Segovia, 02024",+34922296047,,
+85,paciente,Paca,Seco,2000-01-15,"Pasaje Custodio Navarro 924, Cuenca, 38314",+34 800 24 29 23,,
+86,administrativo,Marco,Pavón,1999-05-29,"Camino de Alba Pedrosa 94 Puerta 6 , Alicante, 06859",+34943649246,,
+87,administrativo,Baltasar,Alemany,1980-08-06,"Paseo Eric Blanco 97, Cáceres, 05002",+34 823 964 734,,
+88,paciente,Sebastian,Quintana,1977-05-15,"Urbanización de Esteban Aguilera 90 Puerta 0 , Melilla, 40198",+34973075728,,
+89,paciente,Kike,Torrijos,1949-09-20,"Acceso Germán Narváez 15, Lugo, 45671",+34 875 629 600,,
+90,paciente,Victor Manuel,Milla,1980-06-01,"Urbanización de Rufina Carbó 141, Lleida, 34469",+34949 263 762,,
+91,doctor,Maricruz,Solé,1956-09-09,"Pasadizo Rosaura Folch 92 Piso 7 , Huelva, 32792",+34 944 71 26 11,Gastroenterología,Consultorio 1
+92,doctor,Cintia,Tomas,1993-11-14,"Callejón de Jovita Manzano 17, Palencia, 03232",+34972 66 85 40,Neurología,Consultorio 8
+93,doctor,Apolinar,Diego,1949-11-07,"Glorieta Bienvenida Flor 94 Puerta 0 , Murcia, 31171",+34902 011 204,Dermatología,Consultorio 5
+94,administrativo,Caridad,Lobo,1985-02-24,"Acceso de Áurea Somoza 24, Zaragoza, 18373",+34 888667135,,
+95,doctor,Gisela,Recio,1968-08-18,"Glorieta de Fátima Romero 72 Puerta 1 , Lugo, 32240",+34 882 18 52 09,Traumatología,Consultorio 2
+96,administrativo,Liliana,Vallejo,1989-04-24,"C. Sosimo Ugarte 375, Guadalajara, 27086",+34 711 14 28 84,,
+97,paciente,Maura,Tovar,1989-09-27,"Callejón de Máxima Fuster 98 Puerta 4 , Lleida, 02940",+34 973 73 30 00,,
+98,administrativo,Rosalina,Marquez,1982-09-08,"Glorieta de Teodora Larrañaga 869 Piso 7 , Asturias, 38266",+34 922234651,,
+99,doctor,Bruno,Yuste,1962-12-13,"Pasadizo Yésica Castell 33 Puerta 7 , Ceuta, 34360",+34879995131,Neurología,Consultorio 2
+100,doctor,Rubén,Barrera,1946-11-23,"Plaza de Juana Pazos 6 Piso 6 , Baleares, 09315",+34986990226,Cardiología,Consultorio 2
