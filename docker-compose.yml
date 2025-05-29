@@ -25,9 +25,9 @@ services:
     image: postgres:17
     restart: always
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: "${DATABASE_USERNAME}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE_NAME}"
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
@@ -39,8 +39,8 @@ services:
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: "$PGADMIN_DEFAULT_EMAIL"
+      PGADMIN_DEFAULT_PASSWORD: "$PGADMIN_DEFAULT_PASSWORD"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
