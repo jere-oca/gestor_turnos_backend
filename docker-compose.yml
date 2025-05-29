@@ -1,6 +1,8 @@
 services:
-  web:
+  app:
+    container_name: app
     build: .
+    restart: on-failure
     volumes:
       - app_data:/app
     ports:
@@ -22,31 +24,33 @@ services:
      - .env
 
   db:
+    container_name: db
     image: postgres:17
-    restart: always
-    environment:
-      POSTGRES_USER: "${DATABASE_USERNAME}"
-      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
-      POSTGRES_DB: "${DATABASE_NAME}"
+    restart: on-failure
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: "${DATABASE_USERNAME}"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      POSTGRES_DB: "${DATABASE_NAME}"
     env_file:
       - .env
 
   pgadmin:
+    container_name: pgadmin
     image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "$PGADMIN_DEFAULT_EMAIL"
-      PGADMIN_DEFAULT_PASSWORD: "$PGADMIN_DEFAULT_PASSWORD"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
+    restart: on-failure
     ports:
       - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "${PGADMIN_DEFAULT_EMAIL}"
+      PGADMIN_DEFAULT_PASSWORD: "${PGADMIN_DEFAULT_PASSWORD}"
 
 volumes:
   app_data:
