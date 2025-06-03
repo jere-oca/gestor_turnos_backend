@@ -47,9 +47,9 @@ services:
   frontend:
     build:
       context: ./app/frontend
-      dockerfile: ../../Dockerfile.frontend
-    volumes:
-      - ./app/frontend:/app/frontend
+      dockerfile: Dockerfile
+    #volumes:
+    #  - ./app/frontend:/app/frontend
     ports:
       - "3000:3000"
     stdin_open: true

@@ -2,13 +2,13 @@ FROM node:18-alpine
 
 WORKDIR /app/frontend
 
-# Copy package files
+# Copia los archivos package.json desde la subcarpeta
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application
+# Copia el resto de la app
 COPY . .
 
 # Set environment variables
