@@ -50,6 +50,18 @@ def modificar_turno(request, turno_id):
         form = TurnoForm(instance=turno)
     return render(request, 'turnos/modificar_turno.html', {'form': form, 'turno': turno})
 
+def crear_turno(request):
+    # Lógica para crear turno
+    return render(request, 'turnos/crear_turno.html')
+
+def eliminar_turno(request):
+    # Lógica para eliminar turno
+    return render(request, 'turnos/eliminar_turno.html')
+
+def modificar_turno(request):
+    # Lógica para modificar turno
+    return render(request, 'turnos/modificar_turno.html')
+
 class TurnoViewSet(viewsets.ModelViewSet):
     queryset = Turno.objects.all()
     serializer_class = TurnoSerializer
