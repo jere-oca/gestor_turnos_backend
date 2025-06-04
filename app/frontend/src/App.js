@@ -57,7 +57,14 @@ function App() {
         
         <main className="app-content">
           <Routes>
-            <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Login />} />
+            <Route 
+              path="/login" 
+              element={
+                isLoggedIn 
+                  ? <Navigate to="/dashboard" replace /> 
+                  : <Login setIsLoggedIn={setIsLoggedIn} setUserRole={setUserRole} />
+              } 
+            />
             <Route path="/register" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Register />} />
             <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" replace />} />
             <Route path="/turnos/*" element={isLoggedIn ? <TurnosMain /> : <Navigate to="/login" replace />} />

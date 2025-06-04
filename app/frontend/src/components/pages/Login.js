@@ -2,20 +2,23 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 
-function Login() {
+function Login({ setIsLoggedIn, setUserRole }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();    try {
+    e.preventDefault();
+    try {
       const response = await axios.post('/api/login/', {
         username,
         password
       });
       
       if (response.data.success) {
+        setIsLoggedIn(true);
+        setUserRole(response.data.tipo_usuario || '');
         navigate('/dashboard');
       }
     } catch (err) {
@@ -56,4 +59,4 @@ function Login() {
   );
 }
 
-export default Login; 
+export default Login;

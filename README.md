@@ -48,10 +48,20 @@ docker-compose up -d --build
 ### 3. (Opcional) Cargar datos de ejemplo
 
 ```bash
-docker compose exec web python manage.py loaddata fixtures/initial_data.json
+docker compose exec backend python manage.py loaddata fixtures/initial_data.json
 ```
 
-### 4. Acceder a la aplicación
+### 4. (Opcional) Crear superusuario de Django
+
+Para acceder al panel de administración, crea un superusuario ejecutando:
+
+```bash
+docker compose exec backend python manage.py createsuperuser
+```
+
+Luego podrás ingresar al panel de administración en: [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
+### 5. Acceder a la aplicación
 
 - Frontend: [http://localhost:3000/](http://localhost:3000/)
 - Backend (API): [http://localhost:8000/](http://localhost:8000/)
