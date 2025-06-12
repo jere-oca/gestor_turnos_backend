@@ -2,7 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app/backend
 
-RUN apt update && apt install -y postgresql-client && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
 COPY entrypoint.sh .
