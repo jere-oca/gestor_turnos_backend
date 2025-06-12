@@ -9,6 +9,7 @@ echo "PostgreSQL is ready!"
 
 # Run migrations
 echo "Running database migrations..."
+python manage.py makemigrations
 python manage.py migrate --noinput
 
 # Collect static files (if needed)
