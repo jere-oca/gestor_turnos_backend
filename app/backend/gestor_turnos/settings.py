@@ -28,7 +28,7 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 # Application definition
 
 INSTALLED_APPS = [
-    'user_auth.apps.AuthConfig',
+    'user_auth.apps.UserAuthConfig',
     'authentification.apps.AuthentificationConfig',
     'django.contrib.admin',
     'django.contrib.auth',
