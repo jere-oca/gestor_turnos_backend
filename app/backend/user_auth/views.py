@@ -11,7 +11,7 @@ def api_login(request):
         data = json.loads(request.body)
         username = data.get('username')
         password = data.get('password')
-        user = authenticate(request, username=username, password=password) # Devuelve User o error.
+        user = authenticate(request, username=username, password=password) # Devuelve User o error
         if user is not None:
             auth_login(request, user) # Establece la cookie de sesión
             return JsonResponse({'success': True}, status=200)
@@ -31,9 +31,12 @@ def api_logout(request):
 def api_register(request):
     if request.method == 'POST':
         data = json.loads(request.body)
-        username = data.get('username') # Se usa username para el DNI
+        username = data.get('username') # DNI
         password = data.get('password')
+        first_name = data.get('first_name', '')
+        last_name = data.get('last_name', '')
         email = data.get('email', '')
+        rol = data.get('rol')
 
         if not username or not password:
             return JsonResponse({'success': False, 'error': 'Faltan campos obligatorios'}, status=400)
@@ -47,10 +50,10 @@ def api_register(request):
         if not password_valida(password):
             return JsonResponse({'success': False, 'error': 'La contraseña debe tener al menos 8 caracteres, una letra y un número'}, status=400)
         
-        user = User.objects.create_user(username=username, password=password, email=email)
-        group, _ = Group.objects.get_or_create(name='paciente')
+        user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
+        group, _ = Group.objects.get_or_create(name=rol)
         user.groups.add(group)
-        return JsonResponse({'success': True})
+        return JsonResponse({'success': True, 'message': 'Usuario creado correctamente'})
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
