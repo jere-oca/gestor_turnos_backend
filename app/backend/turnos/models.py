@@ -28,6 +28,7 @@ class Paciente(models.Model):
         return f"{self.user.username} - DNI: {self.dni}"
 
 class Turno(models.Model):
+    id = models.AutoField(primary_key=True)
     fecha = models.DateField()  # La fecha del turno
     hora = models.TimeField()  # La hora del turno
     usuario = models.ForeignKey(AuthUser, on_delete=models.CASCADE)  # Relación con el modelo AuthUser
