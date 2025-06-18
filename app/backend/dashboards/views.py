@@ -1,57 +1,44 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from authentification.views import login_required
-from authentification.models import Persona
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from turnos.models import Turno
 
-def dashboard_redirect(request):
-    """Redirige al dashboard correspondiente según el tipo de usuario."""
-    tipo_usuario = request.session.get('tipo_usuario')
-    if tipo_usuario == 'doctor':
-        return redirect('doctor_dashboard')
-    elif tipo_usuario == 'paciente':
-        return redirect('paciente_dashboard')
-    elif tipo_usuario == 'administrativo':
-        return redirect('admin_dashboard')
-    return redirect('login')
+
+def base_dashboard(username):
+    turnos = Turno.objects.filter(usuario__username=username)
+    data = [{"id": t.id} for t in turnos]
+    return data
+    
+@login_required
+def api_dashboard(request):
+    if request.user.is_authenticated:
+        rol = request.GET.get('rol')
+        if rol == 'doctor':
+            return doctor_dashboard(request)
+        elif rol == 'paciente':
+            return paciente_dashboard(request)
+        elif rol == 'secretario':
+            return secretario_dashboard(request)
+        else:
+            return JsonResponse({'error': 'Rol no válido'}, status=400)
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
 
 @login_required
 def doctor_dashboard(request):
-    """Dashboard para doctores."""
-    if request.session.get('tipo_usuario') != 'doctor':
-        messages.error(request, 'No tienes permiso para acceder a esta página.')
-        return redirect('dashboard_redirect')
-    
-    context = {
-        'nombre': request.session.get('nombre'),
-        'apellido': request.session.get('apellido'),
-        'tipo_usuario': 'Doctor'
-    }
-    return render(request, 'dashboards/doctor_dashboard.html', context)
+    # data = base_dashboard(request.user.username)
+    if request.method == 'GET':
+        return JsonResponse({'dashboard': 'doctor', 'info': 'Datos del doctor'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 @login_required
 def paciente_dashboard(request):
-    """Dashboard para pacientes."""
-    if request.session.get('tipo_usuario') != 'paciente':
-        messages.error(request, 'No tienes permiso para acceder a esta página.')
-        return redirect('dashboard_redirect')
-    
-    context = {
-        'nombre': request.session.get('nombre'),
-        'apellido': request.session.get('apellido'),
-        'tipo_usuario': 'Paciente'
-    }
-    return render(request, 'dashboards/paciente_dashboard.html', context)
+    if request.method == 'GET':
+        return JsonResponse({'dashboard': 'paciente', 'info': 'Datos del paciente'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+
 
 @login_required
-def admin_dashboard(request):
-    """Dashboard para administrativos."""
-    if request.session.get('tipo_usuario') != 'administrativo':
-        messages.error(request, 'No tienes permiso para acceder a esta página.')
-        return redirect('dashboard_redirect')
-    
-    context = {
-        'nombre': request.session.get('nombre'),
-        'apellido': request.session.get('apellido'),
-        'tipo_usuario': 'Administrativo'
-    }
-    return render(request, 'dashboards/admin_dashboard.html', context)
+def secretario_dashboard(request):
+    if request.method == 'GET':
+        return JsonResponse({'dashboard': 'secretario', 'info': 'Datos del secretario'})
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
