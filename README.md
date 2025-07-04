@@ -71,5 +71,5 @@ Luego podrás ingresar al panel de administración en: [http://localhost:8000/ad
 ### Tests de performance
 
 ```bash
-docker compose exec backend /app/backend/run_performance_tests.sh
+docker compose exec backend bash /app/backend/run_performance_tests.sh
 ```
