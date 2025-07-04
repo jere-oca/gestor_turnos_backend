@@ -20,7 +20,7 @@ def api_login(request):
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
-@login_required
+@login_required(login_url='api_login')
 def api_logout(request):
     if request.method == 'POST':
         auth_logout(request) # Borra la cookie de sesión
@@ -51,23 +51,27 @@ def api_register(request):
             return JsonResponse({'success': False, 'error': 'La contraseña debe tener al menos 8 caracteres, una letra y un número'}, status=400)
         
         user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
+        if not rol:
+            rol = "paciente"
         group, _ = Group.objects.get_or_create(name=rol)
         user.groups.add(group)
         return JsonResponse({'success': True, 'message': 'Usuario creado correctamente'})
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
 
-@login_required
+@login_required(login_url='api_login')
 def api_password_change(request):
     if request.method == 'POST':
         data = json.loads(request.body)
+        username = data.get('username')
         old_password = data.get('old_password')
         new_password = data.get('new_password')
 
         if not old_password or not new_password:
             return JsonResponse({'success': False, 'error': 'Faltan campos obligatorios'}, status=400)
 
-        user = request.user
+        user = User.objects.get(username=username)
+
         if not user.check_password(old_password):
             return JsonResponse({'success': False, 'error': 'Contraseña antigua incorrecta'}, status=400)
 
@@ -76,6 +80,11 @@ def api_password_change(request):
 
         user.set_password(new_password)
         user.save()
+
+        auth_login(request, user)
+        
+        user.refresh_from_db()
+        user.check_password(new_password)
         return JsonResponse({'success': True})
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
