@@ -4,7 +4,7 @@
         "pk": 1,
         "fields": {
             "username": "admin",
-            "password": "pbkdf2_sha256$1000000$4zSg6ysvXMraL38iRIdDZK$VWdruRg1iKxopzGpghSiWJ0afCZQYlMW6A8OKvhr56s="
+            "password": "admin123"
         }
     },
     {
@@ -12,7 +12,7 @@
         "pk": 2,
         "fields": {
             "username": "medico1",
-            "password": "pbkdf2_sha256$1000000$jWU0aRbQafB6F2RKPJsLD0$F8Ap4M4tA1O+B/GswdUqVSRJoC2FdsCIWWYa/n/UKg8="
+            "password": "medico123"
         }
     },
     {
@@ -20,7 +20,7 @@
         "pk": 3,
         "fields": {
             "username": "paciente1",
-            "password": "pbkdf2_sha256$1000000$ddfPqKd8unnqPpbbibG9ID$lqbIzN4VRYgbuRGKPaqBAUunSdrx63F4N4KWQoOUNO4="
+            "password": "paciente123"
         }
     },
     {
