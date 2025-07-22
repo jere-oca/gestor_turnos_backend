@@ -220,3 +220,32 @@ def get_csrf(request):
     Usa @ensure_csrf_cookie para forzar al navegador a establecer la cookie CSRF.
     """
     return JsonResponse({'success': True, 'message': 'CSRF cookie set'})
+
+# Alias para compatibilidad con las URLs
+csrf_token_view = get_csrf
+
+@require_http_methods(["GET"])
+def user_info_api(request):
+    """Obtiene información del usuario autenticado."""
+    try:
+        auth_user_id = request.session.get('auth_user_id')
+        if not auth_user_id:
+            return JsonResponse({'authenticated': False, 'user': None}, status=200)
+        
+        auth_user = AuthUser.objects.get(id=auth_user_id)
+        persona = Persona.objects.get(auth_user=auth_user)
+        
+        return JsonResponse({
+            'authenticated': True,
+            'user': {
+                'id': auth_user.id,
+                'username': auth_user.username,
+                'nombre': persona.nombre,
+                'apellido': persona.apellido,
+                'tipo_usuario': persona.tipo_usuario
+            }
+        })
+    except (AuthUser.DoesNotExist, Persona.DoesNotExist):
+        return JsonResponse({'authenticated': False, 'error': 'Usuario no encontrado'}, status=200)
+    except Exception as e:
+        return JsonResponse({'authenticated': False, 'error': str(e)}, status=500)
