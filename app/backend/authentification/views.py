@@ -1,3 +1,4 @@
+
 # Standard library imports
 import json
 from datetime import datetime
@@ -27,7 +28,36 @@ from .utils import (
 
 
 
+# Endpoint temporal para consultar cualquier clave de Redis (solo debug)
+from django.views.decorators.http import require_GET
 
+
+# Endpoint temporal para listar todas las claves en Redis
+@require_GET
+@csrf_exempt
+def redis_keys_view(request):
+    """Devuelve todas las claves visibles para el backend en Redis (solo debug)."""
+    try:
+        if hasattr(cache, 'client'):
+            client = cache.client.get_client(write=True)
+            keys = client.keys('*')
+            keys = [k.decode() if isinstance(k, bytes) else k for k in keys]
+            return JsonResponse({'keys': keys})
+        else:
+            return JsonResponse({'error': 'El backend de cache no es django-redis.'}, status=500)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@require_GET
+@csrf_exempt
+def debug_redis_key(request):
+    """Devuelve el valor de una clave de Redis (solo para debug)."""
+    key = request.GET.get('key')
+    if not key:
+        return JsonResponse({'error': 'Falta parámetro key'}, status=400)
+    from django.core.cache import cache
+    value = cache.get(key)
+    return JsonResponse({'key': key, 'value': value}, status=200)
 
 
 @require_safe

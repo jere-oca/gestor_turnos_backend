@@ -82,16 +82,68 @@ def authenticate_user_and_create_session(username, password, request=None):
     """
     try:
         from .models import AuthUser, Persona
-        
         print(f"[DEBUG] === INICIO AUTENTICACIÓN ===")
         print(f"[DEBUG] Username: {username}")
         print(f"[DEBUG] Password recibido: {'SÍ' if password else 'NO'}")
-        
-        # Buscar usuario
-        auth_user = AuthUser.objects.get(username=username)
-        print(f"[DEBUG] Usuario encontrado en BD: {auth_user.username}")
-        
-        # Verificar contraseña
+
+        # 1. Buscar credenciales en Redis (cache)
+        cache_key = f"user_credentials:{username}"
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            try:
+                cached = json_module.loads(cached_data)
+                print(f"[DEBUG] Cache hit para {username}: {cached}")
+                # Verificar contraseña (guardada como texto plano en cache)
+                if cached.get('password') == password:
+                    print(f"[DEBUG] ✅ Contraseña correcta (cache) para: {username}")
+                    # Simular objetos mínimos para compatibilidad
+                    class DummyAuthUser:
+                        def __init__(self, id, username):
+                            self.id = id
+                            self.username = username
+                    class DummyPersona:
+                        def __init__(self, nombre, apellido, tipo_usuario):
+                            self.nombre = nombre
+                            self.apellido = apellido
+                            self.tipo_usuario = tipo_usuario
+                    auth_user = DummyAuthUser(cached['auth_user_id'], username)
+                    persona = DummyPersona(cached['nombre'], cached['apellido'], cached['tipo_usuario'])
+                    redis_session_key = create_redis_session(auth_user, persona, request)
+                    return {
+                        'success': True,
+                        'auth_user': auth_user,
+                        'persona': persona,
+                        'redis_session_key': redis_session_key,
+                        'session_data': {
+                            'auth_user_id': auth_user.id,
+                            'username': auth_user.username,
+                            'tipo_usuario': persona.tipo_usuario,
+                            'nombre': persona.nombre,
+                            'apellido': persona.apellido,
+                            'redis_session_key': redis_session_key
+                        }
+                    }
+                else:
+                    print(f"[DEBUG] ❌ Contraseña incorrecta (cache) para: {username}")
+                    return {
+                        'success': False,
+                        'error': 'Credenciales inválidas.',
+                        'status': 401
+                    }
+            except Exception as e:
+                print(f"[DEBUG] ❌ Error al leer cache: {e}")
+
+        # 2. Si no está en cache, buscar en la base de datos
+        try:
+            auth_user = AuthUser.objects.get(username=username)
+        except AuthUser.DoesNotExist:
+            print(f"[DEBUG] ❌ Usuario no encontrado: {username}")
+            return {
+                'success': False,
+                'error': 'Usuario no encontrado.',
+                'status': 404
+            }
+
         if not auth_user.check_password(password):
             print(f"[DEBUG] ❌ Contraseña incorrecta para: {username}")
             return {
@@ -99,18 +151,36 @@ def authenticate_user_and_create_session(username, password, request=None):
                 'error': 'Credenciales inválidas.',
                 'status': 401
             }
-        
+
         print(f"[DEBUG] ✅ Contraseña correcta para: {username}")
-        
-        # Obtener persona
-        persona = Persona.objects.get(auth_user=auth_user)
-        print(f"[DEBUG] Persona encontrada: {persona.nombre} {persona.apellido}")
-        
-        # Crear sesión en Redis
-        print(f"[DEBUG] Llamando a create_redis_session...")
+        try:
+            persona = Persona.objects.get(auth_user=auth_user)
+        except Persona.DoesNotExist:
+            print(f"[DEBUG] ❌ Persona no encontrada para usuario: {username}")
+            return {
+                'success': False,
+                'error': 'Datos de persona no encontrados.',
+                'status': 404
+            }
+
+        # 3. Guardar credenciales en Redis (cache)
+
+        print(f"[DEBUG] Guardando en Redis: username='{username}', cache_key='{cache_key}'")
+        cache_data = {
+            'auth_user_id': auth_user.id,
+            'username': auth_user.username,
+            'nombre': persona.nombre,
+            'apellido': persona.apellido,
+            'tipo_usuario': persona.tipo_usuario,
+            'password': password  # ⚠️ En producción NO guardar contraseñas en texto plano
+        }
+        cache.set(cache_key, json_module.dumps(cache_data), timeout=86400)
+        print(f"[DEBUG] Credenciales guardadas en cache para {username}")
+
+        # 4. Crear sesión en Redis
         redis_session_key = create_redis_session(auth_user, persona, request)
         print(f"[DEBUG] Redis session key retornado: {redis_session_key}")
-        
+
         return {
             'success': True,
             'auth_user': auth_user,
@@ -125,26 +195,11 @@ def authenticate_user_and_create_session(username, password, request=None):
                 'redis_session_key': redis_session_key
             }
         }
-        
-    except AuthUser.DoesNotExist:
-        print(f"[DEBUG] ❌ Usuario no encontrado: {username}")
-        return {
-            'success': False,
-            'error': 'Usuario no encontrado.',
-            'status': 404
-        }
-    except Persona.DoesNotExist:
-        print(f"[DEBUG] ❌ Persona no encontrada para usuario: {username}")
-        return {
-            'success': False,
-            'error': 'Datos de persona no encontrados.',
-            'status': 404
-        }
+
     except Exception as e:
         print(f"[DEBUG] ❌ Error en autenticación: {e}")
         import traceback
         traceback.print_exc()
-        # ⭐ AGREGAR ESTE RETURN QUE FALTA:
         return {
             'success': False,
             'error': str(e),

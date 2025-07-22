@@ -88,6 +88,14 @@ services:
     tty: true
     depends_on:
       - backend
+  redisinsight:
+    container_name: redisinsight
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"  # Podés cambiar el puerto externo si ya está en uso
+    restart: on-failure
+    depends_on:
+      - redis  
 
 volumes:
   db_data:
