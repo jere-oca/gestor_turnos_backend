@@ -2,8 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('api/login/', views.api_login, name='api_login'),
-    path('api/logout/', views.api_logout, name='api_logout'),
-    path('api/register/', views.api_register, name='api_register'),
-    path('api/csrf/', views.get_csrf, name='get_csrf'),
+    # URLs para interfaz web
+    path('login/', views.login_form, name='login'),
+    path('process_login/', views.process_login, name='process_login'),
+    path('register/', views.register_form, name='register'),
+    path('process_register/', views.process_register, name='process_register'),
+    path('logout/', views.logout_view, name='logout'),
+    # Note: API URLs are now defined in main urls.py to avoid conflicts
 ]
