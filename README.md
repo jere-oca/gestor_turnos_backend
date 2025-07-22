@@ -48,7 +48,7 @@ docker-compose up -d --build
 ### 3. (Opcional) Cargar datos de ejemplo
 
 ```bash
-docker compose exec backend python manage.py loaddata fixtures/initial_data.json
+docker compose exec backend python manage.py loaddata /app/backend/fixtures/initial_data.json
 ```
 
 ### 4. (Opcional) Crear superusuario de Django

@@ -8,12 +8,17 @@ class EspecialidadSerializer(serializers.ModelSerializer):
 
 class MedicoSerializer(serializers.ModelSerializer):
     especialidad = EspecialidadSerializer(read_only=True)
+    nombre = serializers.CharField(source='user.persona.nombre', read_only=True)
+    apellido = serializers.CharField(source='user.persona.apellido', read_only=True)
     
     class Meta:
         model = Medico
-        fields = ['id', 'nombre', 'apellido', 'especialidad']
+        fields = ['id', 'nombre', 'apellido', 'especialidad', 'matricula']
 
 class PacienteSerializer(serializers.ModelSerializer):
+    nombre = serializers.CharField(source='user.persona.nombre', read_only=True)
+    apellido = serializers.CharField(source='user.persona.apellido', read_only=True)
+    
     class Meta:
         model = Paciente
         fields = ['id', 'nombre', 'apellido', 'dni']
