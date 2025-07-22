@@ -16,6 +16,20 @@ services:
     env_file:
       - .env
 
+  redis:
+    container_name: redis
+    image: redis:7-alpine
+    restart: on-failure
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    env_file:
+      - .env
+
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
@@ -36,6 +50,8 @@ services:
       context: ./app/backend/
     restart: on-failure
     volumes:
+
+      - ./app/backend:/app/backend 
       - backend_data:/app/backend
       - ./scripts:/app/scripts
       - ./tests:/app/tests
@@ -44,6 +60,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - redis
     environment:
       DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
       DEBUG: "${DEBUG}"
@@ -55,8 +72,15 @@ services:
       DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
       DATABASE_HOST: "${DATABASE_HOST}"
       DATABASE_PORT: "${DATABASE_PORT}"
+      REDIS_HOST: "redis"          # Agregar estas variables
+      REDIS_PORT: "6379"           # para la conexión a Redis
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+
+
     env_file:
       - .env
+
+    command: python manage.py runserver 0.0.0.0:8000
 
   frontend:
     container_name: frontend
@@ -69,9 +93,18 @@ services:
     tty: true
     depends_on:
       - backend
+  redisinsight:
+    container_name: redisinsight
+    image: redis/redisinsight:latest
+    ports:
+      - "5540:5540"  # Podés cambiar el puerto externo si ya está en uso
+    restart: on-failure
+    depends_on:
+      - redis  
 
 volumes:
   db_data:
   pgadmin_data:
   backend_data:
+  redis_data:
   backup_data:

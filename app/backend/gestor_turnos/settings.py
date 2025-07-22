@@ -146,15 +146,101 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard_redirect'
 LOGOUT_REDIRECT_URL = 'login'
 
+
+# Redis Configuration
+REDIS_HOST = os.getenv('REDIS_HOST', 'redis')
+REDIS_PORT = os.getenv('REDIS_PORT', '6379')
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD', 'aguantemessi')
+
+# Cache configuration with Redis
+try:
+    import django_redis
+except ImportError:
+    raise ImportError("El paquete 'django-redis' es requerido para usar Redis como backend de cache. Instálalo con 'pip install django-redis'.")
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'gestor_turnos',
+        'TIMEOUT': 300,  # 5 minutes default
+    }
+}
+print(f"[SETTINGS] ✅ Redis cache configured successfully")
+
+# Session configuration
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 86400  # 24 hours
+
+# Custom User Model
+AUTH_USER_MODEL = 'authentification.AuthUser'
+
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "http://frontend:3000",
 ]
-
+CORS_ALLOW_ALL_ORIGINS = True  # Only for development
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://frontend:3000",
 ]
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# Session settings
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+
+# Redis session settings
+USER_SESSION_PREFIX = 'user_session'
+USER_SESSION_TIMEOUT = 86400  # 24 hours
+
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
+print(f"[SETTINGS] Redis configured: redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0")
+print(f"[SETTINGS] Cache backend: django_redis.cache.RedisCache")
+print(f"[SETTINGS] DEBUG mode: {DEBUG}")
