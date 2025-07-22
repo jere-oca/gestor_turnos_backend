@@ -10,57 +10,6 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_safe, require_POST
 from functools import wraps
 from django.contrib.auth import logout
-import hashlib
-import base64
-
-def verify_password(plain_password, hashed_password):
-    """
-    Verifica si una contraseña en texto plano coincide con un hash de Django
-    """
-    try:
-        algorithm, iterations, salt, hash_value = hashed_password.split('$')
-        
-        if algorithm != 'pbkdf2_sha256':
-            return False
-        
-        # Generar el hash con los mismos parámetros
-        key = hashlib.pbkdf2_hmac(
-            'sha256',
-            plain_password.encode('utf-8'),
-            salt.encode('utf-8'),
-            int(iterations)
-        )
-        
-        # Codificar en base64
-        generated_hash = base64.b64encode(key).decode('ascii')
-        
-        return generated_hash == hash_value
-    except (ValueError, TypeError):
-        # Si el formato no es correcto, intentar comparación directa (para compatibilidad)
-        return plain_password == hashed_password
-
-def make_password(raw_password):
-    """
-    Genera un hash PBKDF2 para la contraseña
-    """
-    import os
-    
-    # Generar un salt aleatorio
-    salt = base64.b64encode(os.urandom(12)).decode('ascii')
-    iterations = 1000000
-    
-    # Generar el hash
-    key = hashlib.pbkdf2_hmac(
-        'sha256',
-        raw_password.encode('utf-8'),
-        salt.encode('utf-8'),
-        iterations
-    )
-    
-    # Codificar en base64
-    hash_value = base64.b64encode(key).decode('ascii')
-    
-    return f'pbkdf2_sha256${iterations}${salt}${hash_value}'
 
 def login_required(view_func):
     @wraps(view_func)
@@ -175,7 +124,7 @@ def api_login(request):
         
         try:
             auth_user = AuthUser.objects.get(username=username)
-            if verify_password(password, auth_user.password):
+            if auth_user.password == password:  # En producción usar hash
                 persona = Persona.objects.get(auth_user=auth_user)
                 
                 # Set session data
@@ -231,7 +180,7 @@ def api_register(request):
                 # Crear el usuario de autenticación
                 auth_user = AuthUser.objects.create(
                     username=username,
-                    password=make_password(password)  # Hashear la contraseña
+                    password=password  # En producción usar hash
                 )
                 
                 # Crear la persona
