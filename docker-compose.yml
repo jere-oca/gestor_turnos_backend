@@ -38,6 +38,7 @@ services:
     volumes:
       - backend_data:/app/backend
       - ./scripts:/app/scripts
+      - ./tests:/app/tests
       - backup_data:/app/backups
     ports:
       - "8000:8000"
