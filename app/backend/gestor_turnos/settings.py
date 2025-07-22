@@ -158,3 +158,8 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
 ]
+
+# Django Admin Login/Logout URLs
+# Configura Django Admin para usar sus propias URLs de login/logout
+LOGIN_URL = '/admin/login/'
+LOGOUT_REDIRECT_URL = '/admin/login/'
