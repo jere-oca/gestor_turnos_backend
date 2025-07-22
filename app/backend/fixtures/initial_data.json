@@ -1,0 +1,124 @@
+[
+    {
+        "model": "authentification.authuser",
+        "pk": 1,
+        "fields": {
+            "username": "admin",
+            "password": "pbkdf2_sha256$1000000$4zSg6ysvXMraL38iRIdDZK$VWdruRg1iKxopzGpghSiWJ0afCZQYlMW6A8OKvhr56s="
+        }
+    },
+    {
+        "model": "authentification.authuser",
+        "pk": 2,
+        "fields": {
+            "username": "medico1",
+            "password": "pbkdf2_sha256$1000000$jWU0aRbQafB6F2RKPJsLD0$F8Ap4M4tA1O+B/GswdUqVSRJoC2FdsCIWWYa/n/UKg8="
+        }
+    },
+    {
+        "model": "authentification.authuser",
+        "pk": 3,
+        "fields": {
+            "username": "paciente1",
+            "password": "pbkdf2_sha256$1000000$ddfPqKd8unnqPpbbibG9ID$lqbIzN4VRYgbuRGKPaqBAUunSdrx63F4N4KWQoOUNO4="
+        }
+    },
+    {
+        "model": "authentification.persona",
+        "pk": 1,
+        "fields": {
+            "auth_user": 1,
+            "tipo_usuario": "administrativo",
+            "nombre": "Admin",
+            "apellido": "User",
+            "fecha_nacimiento": "1990-01-01",
+            "direccion": "Calle Admin 123",
+            "telefono": "261-1111111",
+            "especialidad": null,
+            "consultorio": null
+        }
+    },
+    {
+        "model": "authentification.persona",
+        "pk": 2,
+        "fields": {
+            "auth_user": 2,
+            "tipo_usuario": "doctor",
+            "nombre": "Juan",
+            "apellido": "Pérez",
+            "fecha_nacimiento": "1985-01-01",
+            "direccion": "Calle Doctor 456",
+            "telefono": "261-1234567",
+            "especialidad": "Clínica Médica",
+            "consultorio": "1"
+        }
+    },
+    {
+        "model": "authentification.persona",
+        "pk": 3,
+        "fields": {
+            "auth_user": 3,
+            "tipo_usuario": "paciente",
+            "nombre": "María",
+            "apellido": "González",
+            "fecha_nacimiento": "1990-01-01",
+            "direccion": "Calle Principal 123",
+            "telefono": "261-7654321",
+            "especialidad": null,
+            "consultorio": null
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 1,
+        "fields": {
+            "nombre": "Clínica Médica",
+            "descripcion": "Especialidad médica que se ocupa de las enfermedades que afectan a los adultos"
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 2,
+        "fields": {
+            "nombre": "Pediatría",
+            "descripcion": "Especialidad médica que se ocupa de la salud de los niños"
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 3,
+        "fields": {
+            "nombre": "Ginecología",
+            "descripcion": "Especialidad médica que se ocupa de la salud del sistema reproductor femenino"
+        }
+    },
+    {
+        "model": "turnos.especialidad",
+        "pk": 4,
+        "fields": {
+            "nombre": "Traumatología",
+            "descripcion": "Especialidad médica que se ocupa de las lesiones del sistema musculoesquelético"
+        }
+    },
+    {
+        "model": "turnos.medico",
+        "pk": 1,
+        "fields": {
+            "user": 2,
+            "especialidad": 1,
+            "matricula": "12345",
+            "telefono": "261-1234567"
+        }
+    },
+    {
+        "model": "turnos.paciente",
+        "pk": 1,
+        "fields": {
+            "user": 3,
+            "dni": "12345678",
+            "fecha_nacimiento": "1990-01-01",
+            "telefono": "261-7654321",
+            "direccion": "Calle Principal 123"
+        }
+    }
+]
