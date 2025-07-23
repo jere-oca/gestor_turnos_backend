@@ -12,6 +12,14 @@ echo "Running database migrations..."
 python manage.py makemigrations
 python manage.py migrate --noinput
 
+# Load initial data if needed
+echo "Loading initial data..."
+python manage.py loaddata /app/backend/fixtures/initial_data.json || echo "Fixtures already loaded or not needed"
+
+# Setup passwords (hash them if they're in plain text)
+echo "Setting up user passwords..."
+python manage.py setup_passwords
+
 # Collect static files (if needed)
 # python manage.py collectstatic --noinput
 

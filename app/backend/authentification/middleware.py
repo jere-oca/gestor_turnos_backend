@@ -18,7 +18,7 @@ class CustomAuthMiddleware(MiddlewareMixin):
                 # Buscar el usuario en nuestra tabla personalizada
                 auth_user = AuthUser.objects.get(id=auth_user_id)
                 request.user = auth_user
-                request.user.is_authenticated = True
+                # No necesitamos asignar is_authenticated, ya es True automáticamente
             except AuthUser.DoesNotExist:
                 # Si no existe el usuario, establecer como anónimo
                 from django.contrib.auth.models import AnonymousUser
