@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import './Turnos.css';
 
-function CrearTurno() {
+function CrearTurno({ userRole }) {
   const navigate = useNavigate();
   const [especialidades, setEspecialidades] = useState([]);
   const [medicos, setMedicos] = useState([]);
@@ -13,8 +13,27 @@ function CrearTurno() {
     fecha: '',
     hora: '',
     especialidad_id: '',
-    medico_id: ''
+    medico_id: '',
+    paciente_id: ''
   });
+
+  // Si el usuario es paciente, obtener su paciente_id automáticamente
+  useEffect(() => {
+    const fetchPacienteId = async () => {
+      if (userRole && userRole.toLowerCase() === 'paciente') {
+        try {
+          const response = await axios.get('/api/pacientes/?propios=1');
+          if (Array.isArray(response.data) && response.data.length > 0) {
+            setFormData(prev => ({ ...prev, paciente_id: response.data[0].id }));
+          }
+        } catch (err) {
+          // No bloquear el flujo si falla
+          console.error('No se pudo obtener paciente_id:', err);
+        }
+      }
+    };
+    fetchPacienteId();
+  }, [userRole]);
 
   // Generar próximos 30 días hábiles (lunes a viernes)
   const getDiasHabiles = () => {
@@ -110,11 +129,17 @@ function CrearTurno() {
     }
     try {
       setLoading(true);
-      await axios.post('/api/turnos/', {
+      // Construir el body del turno
+      const turnoData = {
         fecha: formData.fecha,
         hora: formData.hora,
         medico_id: formData.medico_id
-      });
+      };
+      // Si hay paciente_id, agregarlo
+      if (formData.paciente_id) {
+        turnoData.paciente_id = formData.paciente_id;
+      }
+      await axios.post('/api/turnos/', turnoData);
       navigate('/turnos');
     } catch (err) {
       console.error('Error al crear turno:', err);
