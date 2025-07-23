@@ -16,6 +16,38 @@ function CrearTurno() {
     medico_id: ''
   });
 
+  // Generar próximos 30 días hábiles (lunes a viernes)
+  const getDiasHabiles = () => {
+    const dias = [];
+    let fecha = new Date();
+    for (let i = 0; dias.length < 30 && i < 60; i++) { // máximo 60 días para encontrar 30 hábiles
+      const day = fecha.getDay();
+      if (day !== 0 && day !== 6) {
+        dias.push(new Date(fecha));
+      }
+      fecha.setDate(fecha.getDate() + 1);
+    }
+    return dias;
+  };
+
+  const diasHabiles = getDiasHabiles();
+
+  // Generar horarios válidos (08:00 a 18:00, cada 15 minutos)
+  const getHorariosValidos = () => {
+    const horarios = [];
+    for (let h = 8; h <= 18; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        if (h === 18 && m > 0) break;
+        const hora = h.toString().padStart(2, '0');
+        const min = m.toString().padStart(2, '0');
+        horarios.push(`${hora}:${min}`);
+      }
+    }
+    return horarios;
+  };
+
+  const horariosValidos = getHorariosValidos();
+
   // Cargar especialidades al montar el componente
   useEffect(() => {
     const fetchEspecialidades = async () => {
@@ -53,17 +85,29 @@ function CrearTurno() {
     fetchMedicos();
   }, [formData.especialidad_id]);
 
+
+  // Nuevo handleChange para selects personalizados
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setError('');
     setFormData(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    // Validación redundante, pero por seguridad
+    if (!diasHabiles.some(d => d.toISOString().split('T')[0] === formData.fecha)) {
+      setError('Solo se pueden seleccionar fechas de lunes a viernes.');
+      return;
+    }
+    if (!horariosValidos.includes(formData.hora)) {
+      setError('Solo se permiten turnos entre 08:00 y 18:00, en intervalos de 15 minutos.');
+      return;
+    }
     try {
       setLoading(true);
       await axios.post('/api/turnos/', {
@@ -71,7 +115,6 @@ function CrearTurno() {
         hora: formData.hora,
         medico_id: formData.medico_id
       });
-      
       navigate('/turnos');
     } catch (err) {
       console.error('Error al crear turno:', err);
@@ -127,29 +170,43 @@ function CrearTurno() {
           </div>
         )}
 
+
         <div className="form-group">
           <label htmlFor="fecha">Fecha:</label>
-          <input 
-            type="date"
+          <select
             id="fecha"
             name="fecha"
             value={formData.fecha}
             onChange={handleChange}
-            min={new Date().toISOString().split('T')[0]} // No permitir fechas pasadas
             required
-          />
+          >
+            <option value="">Seleccione un día</option>
+            {diasHabiles.map(dia => {
+              const iso = dia.toISOString().split('T')[0];
+              const label = dia.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' });
+              return (
+                <option key={iso} value={iso}>{label}</option>
+              );
+            })}
+          </select>
+          <small style={{ color: '#888' }}>Solo se permiten días de lunes a viernes.</small>
         </div>
 
         <div className="form-group">
           <label htmlFor="hora">Hora:</label>
-          <input 
-            type="time"
+          <select
             id="hora"
             name="hora"
             value={formData.hora}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Seleccione un horario</option>
+            {horariosValidos.map(hora => (
+              <option key={hora} value={hora}>{hora}</option>
+            ))}
+          </select>
+          <small style={{ color: '#888' }}>Solo entre 08:00 y 18:00, cada 15 minutos.</small>
         </div>
 
         <div className="form-buttons">

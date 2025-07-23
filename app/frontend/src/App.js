@@ -67,7 +67,7 @@ function App() {
             />
             <Route path="/register" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <Register />} />
             <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" replace />} />
-            <Route path="/turnos/*" element={isLoggedIn ? <TurnosMain /> : <Navigate to="/login" replace />} />
+            <Route path="/turnos/*" element={isLoggedIn ? <TurnosMain userRole={userRole} /> : <Navigate to="/login" replace />} />
             <Route path="/" element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />} />
           </Routes>
         </main>

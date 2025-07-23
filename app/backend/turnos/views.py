@@ -87,9 +87,13 @@ class TurnoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        propios = self.request.query_params.get('propios')
+        # Si el usuario es paciente y pide solo sus turnos
+        if propios == '1' and user.groups.filter(name='paciente').exists():
+            return Turno.objects.filter(paciente__user=user)
         if user.groups.filter(name='Medicos').exists():
             return Turno.objects.filter(medico__user=user)
-        elif user.groups.filter(name='Pacientes').exists():
+        elif user.groups.filter(name='paciente').exists():
             return Turno.objects.filter(paciente__user=user)
         return Turno.objects.all()
 

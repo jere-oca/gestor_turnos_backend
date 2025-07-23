@@ -3,7 +3,7 @@ import axios from '../../utils/axiosConfig';
 import { Link, useNavigate } from 'react-router-dom';
 import './Turnos.css';
 
-function ListarTurnos() {
+function ListarTurnos({ userRole }) {
   const navigate = useNavigate();
   const [turnos, setTurnos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,12 +11,18 @@ function ListarTurnos() {
 
   useEffect(() => {
     fetchTurnos();
+    // eslint-disable-next-line
   }, []);
 
   const fetchTurnos = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('/api/turnos/');
+      let url = '/api/turnos/';
+      // Si el usuario es PACIENTE, pedir solo sus turnos
+      if (userRole === 'paciente') {
+        url = '/api/turnos/?propios=1';
+      }
+      const response = await axios.get(url);
       setTurnos(response.data);
       setLoading(false);
     } catch (err) {
@@ -91,9 +97,11 @@ function ListarTurnos() {
                 <td className="acciones" onClick={(e) => e.stopPropagation()}>
                   {turno.estado !== 'cancelado' && (
                     <>
-                      <Link to={`/turnos/editar/${turno.id}`} className="btn-editar">
-                        Editar
-                      </Link>
+                      {userRole !== 'paciente' && (
+                        <Link to={`/turnos/editar/${turno.id}`} className="btn-editar">
+                          Editar
+                        </Link>
+                      )}
                       <button 
                         onClick={() => handleCancelar(turno.id)} 
                         className="btn-cancelar"
