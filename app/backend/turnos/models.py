@@ -28,7 +28,7 @@ class Paciente(models.Model):
     def __str__(self):
         return f"{self.user.username} - DNI: {self.dni}"
 
-@install('partition', type='range', subtype='date', column='fecha', range='year')
+@install('partition', type='range', subtype='date', column='fecha', range='year', constraint='turno_fecha_range')
 class Turno(models.Model):
     fecha = models.DateField()  # La fecha del turno
     hora = models.TimeField()  # La hora del turno
