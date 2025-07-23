@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.hashers import make_password
 from authentification.models import AuthUser, Persona
-from datagen_utils import Faker
+from faker import Faker # Changed from datagen_utils
 import random
 import datetime
 from django.db import transaction
@@ -21,6 +21,15 @@ class Command(BaseCommand):
         
         fake = Faker('es_ES')  # Usamos locale español
         
+        # Listas para nombres y apellidos (más rápido que Faker para cada uno)
+        nombres_ejemplo = ["Ana", "Luis", "Carlos", "Maria", "Juan", "Laura", "Sofia", "Diego", "Valeria", "Martin"]
+        apellidos_ejemplo = ["García", "Martinez", "Lopez", "Rodriguez", "Perez", "Gomez", "Sanchez", "Diaz", "Alvarez", "Romero"]
+
+        # Valores por defecto para campos simplificados
+        fecha_nacimiento_default = datetime.date(1990, 1, 1)
+        direccion_default = "Calle Falsa 123"
+        telefono_default = "555-0100"
+
         # Tipos de usuario disponibles según el modelo
         tipos_usuario = ['doctor', 'paciente', 'administrativo']
         
@@ -37,14 +46,18 @@ class Command(BaseCommand):
         
         auth_users = []
         personas = []
+        total_created_count = 0 # Initialize total count
         
         self.stdout.write(f'Generando {cantidad} usuarios falsos...')
         
         # Usamos transacción para mejorar el rendimiento y garantizar consistencia
         with transaction.atomic():
             for i in range(cantidad):
-                username = fake.unique.user_name()
-                password = make_password(fake.password(length=12))
+                # username = fake.unique.user_name() # Comentado
+                username = f"usuario_{i+1}" # Simplificado: usa el índice del bucle
+                
+                # password = make_password(fake.password(length=12)) # Comentado para prueba de velocidad
+                password = "testpassword123" # Simplificado: contraseña estática en texto plano
                 
                 # Crear AuthUser
                 auth_user = AuthUser(
@@ -56,7 +69,8 @@ class Command(BaseCommand):
                 # Si alcanzamos el tamaño del lote, insertar AuthUsers
                 if len(auth_users) >= batch_size or i == cantidad - 1:
                     AuthUser.objects.bulk_create(auth_users)
-                    self.stdout.write(f'Insertados {len(auth_users)} AuthUsers...')
+                    total_created_count += len(auth_users) # Increment total count
+                    self.stdout.write(f'Insertados {len(auth_users)} AuthUsers... Total creados hasta ahora: {total_created_count}')
                     
                     # Crear Personas para los AuthUsers creados
                     for user in auth_users:
@@ -71,16 +85,16 @@ class Command(BaseCommand):
                             consultorio = None
                         
                         # Generar fecha de nacimiento (entre 18 y 80 años atrás)
-                        fecha_nacimiento = fake.date_of_birth(minimum_age=18, maximum_age=80)
+                        # fecha_nacimiento = fake.date_of_birth(minimum_age=18, maximum_age=80) # Comentado
                         
                         persona = Persona(
                             auth_user=user,
                             tipo_usuario=tipo_usuario,
-                            nombre=fake.first_name(),
-                            apellido=fake.last_name(),
-                            fecha_nacimiento=fecha_nacimiento,
-                            direccion=fake.address(),
-                            telefono=fake.phone_number(),
+                            nombre=random.choice(nombres_ejemplo), # Simplificado
+                            apellido=random.choice(apellidos_ejemplo), # Simplificado
+                            fecha_nacimiento=fecha_nacimiento_default, # Simplificado
+                            direccion=direccion_default, # Simplificado
+                            telefono=telefono_default, # Simplificado
                             especialidad=especialidad,
                             consultorio=consultorio
                         )
@@ -94,4 +108,4 @@ class Command(BaseCommand):
                     auth_users = []
                     personas = []
         
-        self.stdout.write(self.style.SUCCESS(f'¡{cantidad} usuarios creados exitosamente!'))
+        self.stdout.write(self.style.SUCCESS(f'¡{total_created_count} usuarios creados exitosamente!'))

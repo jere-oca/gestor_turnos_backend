@@ -3,7 +3,7 @@ import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth.hashers import make_password
 from authentification.models import AuthUser, Persona
-from datagen_utils import Faker
+from faker import Faker # Changed from datagen_utils
 import random
 import datetime
 
@@ -60,10 +60,11 @@ class Command(BaseCommand):
             
             for i in range(1, cantidad + 1):
                 username = fake.unique.user_name()
-                password = make_password(fake.password(length=12))
+                # password = make_password(fake.password(length=12)) # Comentado para la prueba
+                plain_password = fake.password(length=12) # Contraseña en texto plano para la prueba
                 
                 # Escribir AuthUser
-                auth_writer.writerow([i, username, password])
+                auth_writer.writerow([i, username, plain_password]) # Usar texto plano para la prueba
                 
                 # Datos para Persona
                 tipo_usuario = random.choice(tipos_usuario)

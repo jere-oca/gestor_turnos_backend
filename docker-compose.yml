@@ -50,12 +50,11 @@ services:
       context: ./app/backend/
     restart: on-failure
     volumes:
-
+      - ./app/backups:/app/backups
       - ./app/backend:/app/backend 
       - backend_data:/app/backend
       - ./scripts:/app/scripts
       - ./tests:/app/tests
-      - backup_data:/app/backups
     ports:
       - "8000:8000"
     depends_on:

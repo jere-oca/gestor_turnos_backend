@@ -1,8 +1,7 @@
 from datetime import datetime
 from django.core.cache import cache
-import json as json_module
 import json
-
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def create_redis_session(auth_user, persona, request=None):
@@ -33,7 +32,6 @@ def create_redis_session(auth_user, persona, request=None):
         print(f"[DEBUG] Intentando guardar en cache...")
         
         # Verificar que cache esté disponible
-        from django.core.cache import cache
         print(f"[DEBUG] Cache backend: {cache.__class__.__name__}")
         
         # Guardar en Redis
@@ -68,7 +66,7 @@ def get_redis_session(auth_user_id):
     session_key = f"user_session:{auth_user_id}"
     session_data = cache.get(session_key)
     if session_data:
-        return json_module.loads(session_data)
+        return json.loads(session_data)
     return None
 
 def delete_redis_session(auth_user_id):
