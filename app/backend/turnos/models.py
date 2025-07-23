@@ -17,6 +17,11 @@ class Medico(models.Model):
     def __str__(self):
         return f"Dr. {self.user.username} - {self.especialidad}"
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['matricula', 'especialidad']),
+        ]
+
 class Paciente(models.Model):
     user = models.OneToOneField(AuthUser, on_delete=models.CASCADE)
     dni = models.CharField(max_length=20, unique=True)
@@ -39,3 +44,8 @@ class Turno(models.Model):
         if self.medico and self.paciente:
             return f"Turno {self.id} para {self.paciente} con Dr. {self.medico} el {self.fecha} a las {self.hora}"
         return f"Turno {self.id} para {self.usuario} el {self.fecha} a las {self.hora}"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['hora']),
+        ]
