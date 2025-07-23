@@ -20,9 +20,6 @@ python manage.py loaddata /app/backend/fixtures/initial_data.json || echo "Fixtu
 echo "Setting up user passwords..."
 python manage.py setup_passwords
 
-# Collect static files (if needed)
-# python manage.py collectstatic --noinput
-
 # Start the server
 echo "Starting Django development server..."
 exec python manage.py runserver 0.0.0.0:8000
