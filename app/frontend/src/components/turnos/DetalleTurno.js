@@ -103,7 +103,7 @@ function DetalleTurno({ userRole }) {
           
           {turno.estado !== 'cancelado' && (
             <>
-              {userRole !== 'PACIENTE' && (
+              {userRole !== 'paciente' && (
                 <button 
                   onClick={() => navigate(`/turnos/editar/${id}`)} 
                   className="btn-editar"

@@ -178,7 +178,9 @@ docker compose exec backend bash
 
 apt-get update && apt-get install -y dos2unix
 
-chmod +x /app/scripts/backup_simple.sh
+dos2unix /app/scripts/restore_simple.sh
+
+chmod +x /app/scripts/restore_simple.sh
 
 /app/scripts/restore_simple.sh backup_mydatabase_20250723_155410.sql
 
