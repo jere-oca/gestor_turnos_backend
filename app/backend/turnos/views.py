@@ -53,7 +53,37 @@ def modificar_turno(request, turno_id):
 class TurnoViewSet(viewsets.ModelViewSet):
     queryset = Turno.objects.all()
     serializer_class = TurnoSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # Restaurar autenticación
+
+    def perform_create(self, serializer):
+        # Obtener el usuario autenticado desde la sesión
+        auth_user_id = self.request.session.get('auth_user_id')
+        
+        if auth_user_id:
+            from authentification.models import AuthUser
+            try:
+                auth_user = AuthUser.objects.get(id=auth_user_id)
+                
+                # Obtener medico_id desde los datos validados
+                medico_id = serializer.validated_data.get('medico_id')
+                
+                # Crear el turno con usuario y médico
+                if medico_id:
+                    from .models import Medico
+                    try:
+                        medico = Medico.objects.get(id=medico_id)
+                        serializer.save(usuario=auth_user, medico=medico)
+                    except Medico.DoesNotExist:
+                        serializer.save(usuario=auth_user)
+                else:
+                    serializer.save(usuario=auth_user)
+                return
+            except AuthUser.DoesNotExist:
+                pass
+        
+        # Si no hay usuario autenticado, lanzar error
+        from rest_framework.exceptions import PermissionDenied
+        raise PermissionDenied("Usuario no autenticado")
 
     def get_queryset(self):
         user = self.request.user

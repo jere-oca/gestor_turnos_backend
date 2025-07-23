@@ -69,7 +69,7 @@ function CrearTurno() {
       await axios.post('/api/turnos/', {
         fecha: formData.fecha,
         hora: formData.hora,
-        medico: formData.medico_id
+        medico_id: formData.medico_id
       });
       
       navigate('/turnos');

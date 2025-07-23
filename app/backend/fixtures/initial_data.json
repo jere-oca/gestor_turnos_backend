@@ -4,7 +4,12 @@
         "pk": 1,
         "fields": {
             "username": "admin",
-            "password": "admin123"
+            "password": "pbkdf2_sha256$600000$random$hashed_password",
+            "is_staff": true,
+            "is_active": true,
+            "is_superuser": true,
+            "last_login": null,
+            "date_joined": "2024-01-01T00:00:00Z"
         }
     },
     {
@@ -12,7 +17,12 @@
         "pk": 2,
         "fields": {
             "username": "medico1",
-            "password": "medico123"
+            "password": "pbkdf2_sha256$600000$random$hashed_password",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false,
+            "last_login": null,
+            "date_joined": "2024-01-01T00:00:00Z"
         }
     },
     {
@@ -20,7 +30,12 @@
         "pk": 3,
         "fields": {
             "username": "paciente1",
-            "password": "paciente123"
+            "password": "pbkdf2_sha256$600000$random$hashed_password",
+            "is_staff": false,
+            "is_active": true,
+            "is_superuser": false,
+            "last_login": null,
+            "date_joined": "2024-01-01T00:00:00Z"
         }
     },
     {

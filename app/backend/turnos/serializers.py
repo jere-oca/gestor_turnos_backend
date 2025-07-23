@@ -27,7 +27,11 @@ class TurnoSerializer(serializers.ModelSerializer):
     medico = MedicoSerializer(read_only=True)
     paciente = PacienteSerializer(read_only=True)
     
+    # Campos para escribir IDs
+    medico_id = serializers.IntegerField(write_only=True, required=False)
+    paciente_id = serializers.IntegerField(write_only=True, required=False)
+    
     class Meta:
         model = Turno
-        fields = ['id', 'fecha', 'hora', 'medico', 'paciente', 'estado']
+        fields = ['id', 'fecha', 'hora', 'medico', 'paciente', 'estado', 'medico_id', 'paciente_id']
         read_only_fields = ['estado'] 
