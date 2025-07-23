@@ -7,18 +7,18 @@ while ! pg_isready -h db -p 5432 -U user; do
 done
 echo "PostgreSQL is ready!"
 
-# Exportar DJANGO_SETTINGS_MODULE
+# Export DJANGO_SETTINGS_MODULE
 export DJANGO_SETTINGS_MODULE=gestor_turnos.settings
 
-# Ejecutar migraciones
+# Run migrations
 echo "Running database migrations..."
 python manage.py makemigrations
 python manage.py migrate --noinput
 
-# Ejecutar architect para particionar el modelo Turno
+# Run partitioning for Turno
 echo "Running architect partition..."
 architect partition --module turnos.models
 
-# Iniciar el servidor
+# Start the Django development server
 echo "Starting Django development server..."
 exec python manage.py runserver 0.0.0.0:8000
