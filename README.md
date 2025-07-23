@@ -54,13 +54,7 @@ Si por algún motivo la configuración automática no funciona, puedes ejecutar 
 
 ```bash
 # Aplicar migraciones de base de datos
-docker exec backend python manage.py migrate
-
-# Cargar datos de ejemplo
-docker exec backend python manage.py loaddata /app/backend/fixtures/initial_data.json
-
-# Configurar contraseñas de forma segura
-docker exec backend python manage.py setup_passwords
+docker exec backend ./entrypoint.sh
 ```
 
 ### 3. Acceder a la aplicación
@@ -175,7 +169,9 @@ Antes de restarurar la base de datos debemos ejecutar
 
 ```bash
 docker compose exec backend bash
+```
 
+```bash
 apt-get update && apt-get install -y dos2unix
 
 dos2unix /app/scripts/restore_simple.sh
