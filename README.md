@@ -53,7 +53,7 @@ docker-compose up -d --build
 Si por algún motivo la configuración automática no funciona, puedes ejecutar estos comandos manualmente:
 
 ```bash
-# Aplicar migraciones de base de datos
+# Aplica migraciones de base de datos
 docker exec backend ./entrypoint.sh
 ```
 
