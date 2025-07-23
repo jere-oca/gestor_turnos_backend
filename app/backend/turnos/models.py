@@ -1,5 +1,6 @@
 from django.db import models
 from authentification.models import AuthUser
+from architect import install
 
 class Especialidad(models.Model):
     nombre = models.CharField(max_length=100)
@@ -27,6 +28,7 @@ class Paciente(models.Model):
     def __str__(self):
         return f"{self.user.username} - DNI: {self.dni}"
 
+@install('partition', type='range', subtype='date', column='fecha', range='year')
 class Turno(models.Model):
     fecha = models.DateField()  # La fecha del turno
     hora = models.TimeField()  # La hora del turno
