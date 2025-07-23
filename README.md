@@ -169,6 +169,18 @@ docker-compose up -d --build
 
 ###
 
+
+Antes de restarurar la base de datos debemos ejecutar
+
+
 ```bash
-docker compose exec backend bash /app/scripts/restore_simple.sh backup_mydatabase_20250723_155410.sql
+docker compose exec backend bash
+
+apt-get update && apt-get install -y dos2unix
+
+chmod +x /app/scripts/backup_simple.sh
+
+/app/scripts/restore_simple.sh backup_mydatabase_20250723_155410.sql
+
+#Podemos elegir ese archivo de backup o el ultimo que generemos
 ```
