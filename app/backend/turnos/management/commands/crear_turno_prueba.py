@@ -21,7 +21,7 @@ class Command(BaseCommand):
             persona_paciente = Persona.objects.get(auth_user=auth_user_paciente)
             
             if persona_paciente.tipo_usuario != 'paciente':
-                self.stdout.write(f"❌ Error: {paciente_username} no es un paciente")
+                self.stdout.write(f" Error: {paciente_username} no es un paciente")
                 return
             
             # Buscar el usuario médico
@@ -29,7 +29,7 @@ class Command(BaseCommand):
             persona_medico = Persona.objects.get(auth_user=auth_user_medico)
             
             if persona_medico.tipo_usuario != 'doctor':
-                self.stdout.write(f"❌ Error: {medico_username} no es un médico")
+                self.stdout.write(f" Error: {medico_username} no es un médico")
                 return
             
             # Obtener o crear el registro de Paciente
@@ -43,7 +43,7 @@ class Command(BaseCommand):
                     telefono="000-000-0000",
                     direccion="Dirección de prueba"
                 )
-                self.stdout.write(f"✅ Creado registro de Paciente para {paciente_username}")
+                self.stdout.write(f" Creado registro de Paciente para {paciente_username}")
             
             # Obtener o crear el registro de Médico
             try:
@@ -67,7 +67,7 @@ class Command(BaseCommand):
                     matricula=f"MAT-{auth_user_medico.id}",
                     telefono="000-000-0000"
                 )
-                self.stdout.write(f"✅ Creado registro de Médico para {medico_username}")
+                self.stdout.write(f" Creado registro de Médico para {medico_username}")
             
             # Crear el turno
             fecha_turno = datetime.now() + timedelta(days=7)  # Turno para la próxima semana
@@ -82,7 +82,7 @@ class Command(BaseCommand):
                     estado="pendiente"
                 )
                 
-                self.stdout.write(f"✅ Turno creado exitosamente!")
+                self.stdout.write(f" Turno creado exitosamente!")
                 self.stdout.write(f"   ID: {turno.id}")
                 self.stdout.write(f"   Usuario: {turno.usuario.username}")
                 self.stdout.write(f"   Paciente: {turno.paciente.user.username} (ID: {turno.paciente.id})")
@@ -92,13 +92,13 @@ class Command(BaseCommand):
                 
                 # Verificar que se puede leer el turno
                 turno_verificacion = Turno.objects.get(id=turno.id)
-                self.stdout.write(f"✅ Verificación: Turno {turno_verificacion.id} existe en la base de datos")
+                self.stdout.write(f" Verificación: Turno {turno_verificacion.id} existe en la base de datos")
                 
         except AuthUser.DoesNotExist as e:
-            self.stdout.write(f"❌ Error: Usuario no encontrado - {e}")
+            self.stdout.write(f" Error: Usuario no encontrado - {e}")
         except Persona.DoesNotExist as e:
-            self.stdout.write(f"❌ Error: Persona no encontrada - {e}")
+            self.stdout.write(f" Error: Persona no encontrada - {e}")
         except Exception as e:
-            self.stdout.write(f"❌ Error inesperado: {e}")
+            self.stdout.write(f" Error inesperado: {e}")
             import traceback
             self.stdout.write(traceback.format_exc())

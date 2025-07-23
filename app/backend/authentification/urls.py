@@ -18,8 +18,8 @@ urlpatterns = [
     path('api/user/', views.user_info_api, name='user_info_api'),
     path('api/debug/user/', views.debug_user_session, name='debug_user_session'),
     # Endpoint temporal para debug de Redis
-    path('api/debug/redis/', views.debug_redis_key, name='debug_redis_key'),
-    path('api/redis/keys/', views.redis_keys_view, name='redis_keys_view'),
+    #path('api/debug/redis/', views.debug_redis_key, name='debug_redis_key'),
+    #path('api/redis/keys/', views.redis_keys_view, name='redis_keys_view'),
     # URLs para interfaz web
     path('login/', views.login_form, name='login'),
     path('process_login/', views.process_login, name='process_login'),
