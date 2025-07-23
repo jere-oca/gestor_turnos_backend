@@ -164,3 +164,11 @@ docker-compose down -v --remove-orphans
 # Volver a construir todo
 docker-compose up -d --build
 ```
+
+## Restore Backup
+
+###
+
+```bash
+docker compose exec backend bash /app/scripts/restore_simple.sh backup_mydatabase_20250723_155410.sql
+```
