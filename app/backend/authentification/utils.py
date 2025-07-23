@@ -2,7 +2,7 @@ from datetime import datetime
 from django.core.cache import cache
 import json as json_module
 import json
-
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def create_redis_session(auth_user, persona, request=None):
@@ -94,7 +94,7 @@ def authenticate_user_and_create_session(username, password, request=None):
                 cached = json_module.loads(cached_data)
                 print(f"[DEBUG] Cache hit para {username}: {cached}")
                 # Verificar contraseña (guardada como texto plano en cache)
-                if cached.get('password') == password:
+                if check_password(password,cached.get('password_hash')):
                     print(f"[DEBUG] ✅ Contraseña correcta (cache) para: {username}")
                     # Simular objetos mínimos para compatibilidad
                     class DummyAuthUser:
@@ -172,7 +172,7 @@ def authenticate_user_and_create_session(username, password, request=None):
             'nombre': persona.nombre,
             'apellido': persona.apellido,
             'tipo_usuario': persona.tipo_usuario,
-            'password': password  # ⚠️ En producción NO guardar contraseñas en texto plano
+            'password_hash': make_password(password) # ⚠️ En producción NO guardar contraseñas en texto plano
         }
         cache.set(cache_key, json_module.dumps(cache_data), timeout=86400)
         print(f"[DEBUG] Credenciales guardadas en cache para {username}")
