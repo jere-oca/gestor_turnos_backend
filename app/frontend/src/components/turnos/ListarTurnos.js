@@ -19,7 +19,8 @@ function ListarTurnos({ userRole }) {
       setLoading(true);
       // Ya no necesitamos parámetros especiales, el backend filtra automáticamente
       const response = await axios.get('/api/turnos/');
-      setTurnos(response.data);
+      console.log('Respuesta de API:', response.data);
+      setTurnos(Array.isArray(response.data) ? response.data : []);
       setLoading(false);
     } catch (err) {
       console.error('Error al cargar los turnos:', err);

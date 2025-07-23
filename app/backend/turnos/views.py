@@ -10,6 +10,9 @@ from .serializers import (
     TurnoSerializer, EspecialidadSerializer,
     MedicoSerializer, PacienteSerializer
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 @login_required
 def crear_turno(request):
@@ -56,6 +59,12 @@ class TurnoViewSet(viewsets.ModelViewSet):
     serializer_class = TurnoSerializer
     permission_classes = [permissions.IsAuthenticated]  # Restaurar autenticación
 
+    def list(self, request, *args, **kwargs):
+        """Override list to add minimal debugging"""
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
     def perform_create(self, serializer):
         # Obtener el usuario autenticado desde la sesión
         auth_user_id = self.request.session.get('auth_user_id')
@@ -65,8 +74,14 @@ class TurnoViewSet(viewsets.ModelViewSet):
                 auth_user = AuthUser.objects.get(id=auth_user_id)
                 persona = Persona.objects.get(auth_user=auth_user)
                 
+                print(f"[DEBUG CREATE] Usuario creando turno: {auth_user.username} (ID: {auth_user.id})")
+                print(f"[DEBUG CREATE] Tipo de usuario: {persona.tipo_usuario}")
+                
                 medico_id = serializer.validated_data.get('medico_id')
                 paciente_id = serializer.validated_data.get('paciente_id')
+                
+                print(f"[DEBUG CREATE] medico_id recibido: {medico_id}")
+                print(f"[DEBUG CREATE] paciente_id recibido: {paciente_id}")
                 
                 from .models import Medico, Paciente
                 medico = None
@@ -76,7 +91,9 @@ class TurnoViewSet(viewsets.ModelViewSet):
                 if medico_id:
                     try:
                         medico = Medico.objects.get(id=medico_id)
+                        print(f"[DEBUG CREATE] Médico encontrado: {medico.user.username}")
                     except Medico.DoesNotExist:
+                        print(f"[DEBUG CREATE] Médico con ID {medico_id} no encontrado")
                         medico = None
                 
                 # Lógica para asignar el paciente según el tipo de usuario
@@ -84,7 +101,9 @@ class TurnoViewSet(viewsets.ModelViewSet):
                     # Si el usuario es paciente, automáticamente asignarlo como el paciente del turno
                     try:
                         paciente = Paciente.objects.get(user=auth_user)
+                        print(f"[DEBUG CREATE] Paciente existente encontrado: {paciente.user.username}")
                     except Paciente.DoesNotExist:
+                        print(f"[DEBUG CREATE] Creando nuevo registro de Paciente para {auth_user.username}")
                         # Si no existe el registro de Paciente, crearlo
                         paciente = Paciente.objects.create(
                             user=auth_user,
@@ -93,18 +112,28 @@ class TurnoViewSet(viewsets.ModelViewSet):
                             telefono="000-000-0000",  # Teléfono temporal
                             direccion="Dirección pendiente"  # Dirección temporal
                         )
+                        print(f"[DEBUG CREATE] Nuevo paciente creado con ID: {paciente.id}")
                 else:
                     # Si es médico o administrativo, usar el paciente_id proporcionado
                     if paciente_id:
                         try:
                             paciente = Paciente.objects.get(id=paciente_id)
+                            print(f"[DEBUG CREATE] Paciente seleccionado: {paciente.user.username}")
                         except Paciente.DoesNotExist:
+                            print(f"[DEBUG CREATE] Paciente con ID {paciente_id} no encontrado")
                             paciente = None
                 
+                print(f"[DEBUG CREATE] Guardando turno con:")
+                print(f"[DEBUG CREATE] - usuario: {auth_user.username}")
+                print(f"[DEBUG CREATE] - medico: {medico.user.username if medico else 'None'}")
+                print(f"[DEBUG CREATE] - paciente: {paciente.user.username if paciente else 'None'}")
+                
                 # Guardar el turno con los objetos encontrados
-                serializer.save(usuario=auth_user, medico=medico, paciente=paciente)
+                turno = serializer.save(usuario=auth_user, medico=medico, paciente=paciente)
+                print(f"[DEBUG CREATE] Turno creado con ID: {turno.id}")
                 return
-            except (AuthUser.DoesNotExist, Persona.DoesNotExist):
+            except (AuthUser.DoesNotExist, Persona.DoesNotExist) as e:
+                print(f"[DEBUG CREATE] Error al encontrar usuario/persona: {e}")
                 pass
         # Si no hay usuario autenticado, lanzar error
         from rest_framework.exceptions import PermissionDenied
@@ -159,6 +188,7 @@ class TurnoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Obtener el auth_user_id de la sesión
         auth_user_id = self.request.session.get('auth_user_id')
+        
         if not auth_user_id:
             return Turno.objects.none()  # Sin usuario autenticado, no devolver turnos
         
@@ -167,40 +197,34 @@ class TurnoViewSet(viewsets.ModelViewSet):
             auth_user = AuthUser.objects.get(id=auth_user_id)
             persona = Persona.objects.get(auth_user=auth_user)
             
-            # DEBUG: Imprimir información para debugging
-            print(f"[DEBUG] Usuario autenticado: {auth_user.username} (ID: {auth_user.id})")
-            print(f"[DEBUG] Tipo de usuario: {persona.tipo_usuario}")
-            
             # Filtrar según el tipo de usuario
             if persona.tipo_usuario == 'paciente':
-                # Los pacientes solo ven turnos donde ELLOS son el paciente asignado
-                queryset = Turno.objects.filter(paciente__user=auth_user)
-                print(f"[DEBUG] Filtro para paciente: paciente__user={auth_user.id}")
-                print(f"[DEBUG] Turnos encontrados: {queryset.count()}")
-                for turno in queryset:
-                    print(f"[DEBUG] Turno {turno.id}: paciente_id={turno.paciente.id if turno.paciente else None}, paciente_user_id={turno.paciente.user.id if turno.paciente else None}")
+                # Para pacientes: mostrar turnos donde ellos están como paciente
+                # O turnos que crearon si no tienen un registro de paciente asociado
+                queryset_paciente = Turno.objects.filter(paciente__user=auth_user)
+                queryset_creados = Turno.objects.filter(usuario=auth_user, paciente__isnull=True)
+                
+                # Combinar ambos querysets
+                queryset = Turno.objects.filter(
+                    Q(paciente__user=auth_user) | 
+                    Q(usuario=auth_user, paciente__isnull=True)
+                ).distinct()
+                
                 return queryset
                     
             elif persona.tipo_usuario == 'doctor':
                 # Los médicos solo ven turnos donde ELLOS son el médico asignado
-                queryset = Turno.objects.filter(medico__user=auth_user)
-                print(f"[DEBUG] Filtro para doctor: medico__user={auth_user.id}")
-                print(f"[DEBUG] Turnos encontrados: {queryset.count()}")
-                return queryset
+                return Turno.objects.filter(medico__user=auth_user)
                     
             elif persona.tipo_usuario == 'administrativo':
                 # Los administrativos pueden ver todos los turnos
-                queryset = Turno.objects.all()
-                print(f"[DEBUG] Administrativo: mostrando todos los turnos ({queryset.count()})")
-                return queryset
+                return Turno.objects.all()
                 
             else:
                 # Tipo de usuario no reconocido, no mostrar turnos
-                print(f"[DEBUG] Tipo de usuario no reconocido: {persona.tipo_usuario}")
                 return Turno.objects.none()
                 
         except (AuthUser.DoesNotExist, Persona.DoesNotExist):
-            print(f"[DEBUG] Error: Usuario o persona no encontrada para auth_user_id={auth_user_id}")
             return Turno.objects.none()
 
     @action(detail=True, methods=['post'])
@@ -232,7 +256,46 @@ class PacienteViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.groups.filter(name='Pacientes').exists():
-            return Paciente.objects.filter(user=user)
-        return Paciente.objects.all()
+        # Usar el sistema de autenticación personalizado con sesiones
+        auth_user_id = self.request.session.get('auth_user_id')
+        if not auth_user_id:
+            return Paciente.objects.none()
+        
+        try:
+            from authentification.models import AuthUser, Persona
+            auth_user = AuthUser.objects.get(id=auth_user_id)
+            persona = Persona.objects.get(auth_user=auth_user)
+            
+            print(f"[DEBUG PACIENTES] Usuario: {auth_user.username}, Tipo: {persona.tipo_usuario}")
+            
+            # Verificar si se está pidiendo "propios"
+            propios = self.request.query_params.get('propios', None)
+            
+            if persona.tipo_usuario == 'paciente':
+                # Los pacientes solo ven su propio registro
+                queryset = Paciente.objects.filter(user=auth_user)
+                print(f"[DEBUG PACIENTES] Paciente - devolviendo registro propio: {queryset.count()}")
+                return queryset
+            elif persona.tipo_usuario == 'doctor':
+                # Los médicos pueden ver todos los pacientes
+                if propios == '1':
+                    # Si piden "propios", devolver pacientes que tienen turnos con este médico
+                    queryset = Paciente.objects.filter(turno__medico__user=auth_user).distinct()
+                    print(f"[DEBUG PACIENTES] Médico - pacientes propios: {queryset.count()}")
+                    return queryset
+                else:
+                    queryset = Paciente.objects.all()
+                    print(f"[DEBUG PACIENTES] Médico - todos los pacientes: {queryset.count()}")
+                    return queryset
+            elif persona.tipo_usuario == 'administrativo':
+                # Los administrativos pueden ver todos los pacientes
+                queryset = Paciente.objects.all()
+                print(f"[DEBUG PACIENTES] Administrativo - todos los pacientes: {queryset.count()}")
+                return queryset
+            else:
+                print(f"[DEBUG PACIENTES] Tipo de usuario no reconocido: {persona.tipo_usuario}")
+                return Paciente.objects.none()
+                
+        except (AuthUser.DoesNotExist, Persona.DoesNotExist) as e:
+            print(f"[DEBUG PACIENTES] Error: {e}")
+            return Paciente.objects.none()
