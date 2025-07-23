@@ -329,18 +329,87 @@ def get_csrf(request):
 csrf_token_view = get_csrf
 
 @require_http_methods(["GET"])
-def user_info_api(request):
-    """Obtiene información del usuario autenticado."""
+def debug_user_session(request):
+    """DEBUG: Endpoint para verificar la sesión del usuario"""
     try:
         auth_user_id = request.session.get('auth_user_id')
         if not auth_user_id:
-            return JsonResponse({'authenticated': False, 'user': None}, status=200)
+            return JsonResponse({'error': 'No hay usuario autenticado'}, status=401)
+        
+        auth_user = AuthUser.objects.get(id=auth_user_id)
+        persona = Persona.objects.get(auth_user=auth_user)
+        
+        # Verificar si tiene registros relacionados
+        from turnos.models import Paciente, Medico, Turno
+        
+        es_paciente = False
+        paciente_id = None
+        try:
+            paciente = Paciente.objects.get(user=auth_user)
+            es_paciente = True
+            paciente_id = paciente.id
+        except Paciente.DoesNotExist:
+            pass
+            
+        es_medico = False
+        medico_id = None
+        try:
+            medico = Medico.objects.get(user=auth_user)
+            es_medico = True
+            medico_id = medico.id
+        except Medico.DoesNotExist:
+            pass
+        
+        # Contar turnos
+        turnos_como_usuario = Turno.objects.filter(usuario=auth_user).count()
+        turnos_como_paciente = Turno.objects.filter(paciente__user=auth_user).count()
+        turnos_como_medico = Turno.objects.filter(medico__user=auth_user).count()
+        
+        return JsonResponse({
+            'auth_user': {
+                'id': auth_user.id,
+                'username': auth_user.username
+            },
+            'persona': {
+                'tipo_usuario': persona.tipo_usuario,
+                'nombre': persona.nombre,
+                'apellido': persona.apellido
+            },
+            'relaciones': {
+                'es_paciente': es_paciente,
+                'paciente_id': paciente_id,
+                'es_medico': es_medico,
+                'medico_id': medico_id
+            },
+            'turnos': {
+                'como_usuario': turnos_como_usuario,
+                'como_paciente': turnos_como_paciente,
+                'como_medico': turnos_como_medico
+            }
+        })
+    except (AuthUser.DoesNotExist, Persona.DoesNotExist) as e:
+        return JsonResponse({'error': f'Usuario no encontrado: {str(e)}'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': f'Error interno: {str(e)}'}, status=500)
+
+@require_http_methods(["GET"])
+def user_info_api(request):
+    """Obtiene información del usuario autenticado para el frontend."""
+    try:
+        auth_user_id = request.session.get('auth_user_id')
+        if not auth_user_id:
+            return JsonResponse({
+                'isAuthenticated': False, 
+                'role': '',
+                'user': None
+            }, status=200)
         
         auth_user = AuthUser.objects.get(id=auth_user_id)
         persona = Persona.objects.get(auth_user=auth_user)
         
         return JsonResponse({
-            'authenticated': True,
+            'isAuthenticated': True,
+            'role': persona.tipo_usuario,  # Esto es lo que App.js espera
             'user': {
                 'id': auth_user.id,
                 'username': auth_user.username,
@@ -350,6 +419,14 @@ def user_info_api(request):
             }
         })
     except (AuthUser.DoesNotExist, Persona.DoesNotExist):
-        return JsonResponse({'authenticated': False, 'error': 'Usuario no encontrado'}, status=200)
+        return JsonResponse({
+            'isAuthenticated': False, 
+            'role': '',
+            'error': 'Usuario no encontrado'
+        }, status=200)
     except Exception as e:
-        return JsonResponse({'authenticated': False, 'error': str(e)}, status=500)
+        return JsonResponse({
+            'isAuthenticated': False, 
+            'role': '',
+            'error': str(e)
+        }, status=500)

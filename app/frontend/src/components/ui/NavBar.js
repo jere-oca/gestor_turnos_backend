@@ -49,7 +49,7 @@ function NavBar({ isLoggedIn, userRole }) {
                   Turnos
                 </Link>
               </li>
-              {userRole === 'admin' && (
+              {userRole === 'administrativo' && (
                 <li className="nav-item">
                   <Link 
                     to="/admin" 

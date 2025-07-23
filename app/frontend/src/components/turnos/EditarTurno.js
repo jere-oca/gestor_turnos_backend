@@ -111,7 +111,7 @@ function EditarTurno({ userRole }) {
     }
   };
 
-  if (userRole === 'PACIENTE') {
+  if (userRole === 'paciente') {
     return <div className="error">No tienes permiso para editar turnos.</div>;
   }
   if (loading && !turno) return <div className="loading">Cargando datos del turno...</div>;

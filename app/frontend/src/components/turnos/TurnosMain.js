@@ -16,7 +16,7 @@ function TurnosMain({ userRole }) {
           <Route path="/" element={<ListarTurnos userRole={userRole} />} />
           <Route path="/crear" element={<CrearTurno userRole={userRole} />} />
           {/* Solo permitir ruta de edición si NO es paciente */}
-          {userRole !== 'PACIENTE' && <Route path="/editar/:id" element={<EditarTurno userRole={userRole} />} />}
+          {userRole !== 'paciente' && <Route path="/editar/:id" element={<EditarTurno userRole={userRole} />} />}
           <Route path="/detalle/:id" element={<DetalleTurno userRole={userRole} />} />
           <Route path="*" element={<Navigate to="/turnos" replace />} />
         </Routes>

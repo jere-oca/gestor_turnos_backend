@@ -76,8 +76,8 @@ function Register() {
             required
           >
             <option value="paciente">Paciente</option>
-            <option value="medico">Médico</option>
-            <option value="admin">Administrador</option>
+            <option value="doctor">Médico</option>
+            <option value="administrativo">Administrador</option>
           </select>
         </div>
         <div className="form-group">

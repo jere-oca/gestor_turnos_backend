@@ -15,7 +15,8 @@ urlpatterns = [
     path('api/logout/', views.api_logout, name='api_logout'),
     path('api/register/', views.api_register, name='api_register'),
     path('api/csrf/', views.get_csrf, name='get_csrf'),
-    path('api/user/', views.api_get_session, name='api_get_session'),
+    path('api/user/', views.user_info_api, name='user_info_api'),
+    path('api/debug/user/', views.debug_user_session, name='debug_user_session'),
     # Endpoint temporal para debug de Redis
     path('api/debug/redis/', views.debug_redis_key, name='debug_redis_key'),
     path('api/redis/keys/', views.redis_keys_view, name='redis_keys_view'),

@@ -17,12 +17,8 @@ function ListarTurnos({ userRole }) {
   const fetchTurnos = async () => {
     try {
       setLoading(true);
-      let url = '/api/turnos/';
-      // Si el usuario es PACIENTE, pedir solo sus turnos
-      if (userRole === 'paciente') {
-        url = '/api/turnos/?propios=1';
-      }
-      const response = await axios.get(url);
+      // Ya no necesitamos parámetros especiales, el backend filtra automáticamente
+      const response = await axios.get('/api/turnos/');
       setTurnos(response.data);
       setLoading(false);
     } catch (err) {
