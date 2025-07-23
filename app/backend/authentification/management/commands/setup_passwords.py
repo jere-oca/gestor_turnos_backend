@@ -22,16 +22,16 @@ class Command(BaseCommand):
                 
                 # Verificar si la contraseña ya está hasheada
                 if user.check_password(plain_password):
-                    self.stdout.write(f'{username}: contraseña ya hasheada correctamente')
+                    self.stdout.write(f'✅ {username}: contraseña ya hasheada correctamente')
                     continue
                 
                 # Si no está hasheada, hashearla
                 user.password = make_password(plain_password)
                 user.save()
-                self.stdout.write(f' {username}: contraseña hasheada y guardada')
+                self.stdout.write(f'🔧 {username}: contraseña hasheada y guardada')
                 
             except AuthUser.DoesNotExist:
-                self.stdout.write(f' {username}: usuario no encontrado, omitiendo...')
+                self.stdout.write(f'  {username}: usuario no encontrado, omitiendo...')
                 continue
         
         self.stdout.write('[SETUP]  Verificación de contraseñas completada')

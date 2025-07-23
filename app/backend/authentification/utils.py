@@ -36,7 +36,7 @@ def create_redis_session(auth_user, persona, request=None):
         
         # Guardar en Redis
         cache.set(session_key, json.dumps(session_data), timeout=86400)
-        print(f"[DEBUG]  cache.set() ejecutado")
+        print(f"[DEBUG] ✅ cache.set() ejecutado")
         
         # Verificar inmediatamente
         test_data = cache.get(session_key)
@@ -44,18 +44,18 @@ def create_redis_session(auth_user, persona, request=None):
         print(f"[DEBUG] Tipo de dato: {type(test_data)}")
         
         if test_data:
-            print(f"[DEBUG]  Sesión confirmada en Redis")
+            print(f"[DEBUG] ✅ Sesión confirmada en Redis")
             # Verificar que sea JSON válido
             try:
                 parsed = json.loads(test_data)
                 print(f"[DEBUG] JSON parseado correctamente: {parsed.get('username')}")
             except:
-                print(f"[DEBUG]  Error al parsear JSON")
+                print(f"[DEBUG] ❌ Error al parsear JSON")
         else:
-            print(f"[DEBUG] Sesión NO se guardó en Redis")
+            print(f"[DEBUG] ❌ Sesión NO se guardó en Redis")
             
     except Exception as e:
-        print(f"[DEBUG]  Error al guardar en Redis: {e}")
+        print(f"[DEBUG] ❌ Error al guardar en Redis: {e}")
         import traceback
         traceback.print_exc()
     
@@ -89,7 +89,7 @@ def authenticate_user_and_create_session(username, password, request=None):
         try:
             auth_user = AuthUser.objects.get(username=username)
         except AuthUser.DoesNotExist:
-            print(f"[DEBUG]  Usuario no encontrado: {username}")
+            print(f"[DEBUG] ❌ Usuario no encontrado: {username}")
             return {
                 'success': False,
                 'error': 'Credenciales inválidas.',
@@ -98,14 +98,14 @@ def authenticate_user_and_create_session(username, password, request=None):
 
         # Verificar contraseña usando el hash de Django
         if not auth_user.check_password(password):
-            print(f"[DEBUG]  Contraseña incorrecta para: {username}")
+            print(f"[DEBUG] ❌ Contraseña incorrecta para: {username}")
             return {
                 'success': False,
                 'error': 'Credenciales inválidas.',
                 'status': 401
             }
 
-        print(f"[DEBUG]  Contraseña correcta (DB) para: {username}")
+        print(f"[DEBUG] ✅ Contraseña correcta (DB) para: {username}")
 
         # Obtener datos de persona
         try:
@@ -118,7 +118,7 @@ def authenticate_user_and_create_session(username, password, request=None):
                 'status': 500
             }
 
-        print(f"[DEBUG]  Persona encontrada: {persona.nombre} {persona.apellido}")
+        print(f"[DEBUG] ✅ Persona encontrada: {persona.nombre} {persona.apellido}")
 
         # Crear sesión en Redis (sin contraseñas)
         redis_session_key = create_redis_session(auth_user, persona, request)
@@ -139,7 +139,7 @@ def authenticate_user_and_create_session(username, password, request=None):
         }
 
     except Exception as e:
-        print(f"[DEBUG]  Error en autenticación: {e}")
+        print(f"[DEBUG] ❌ Error en autenticación: {e}")
         import traceback
         traceback.print_exc()
         return {

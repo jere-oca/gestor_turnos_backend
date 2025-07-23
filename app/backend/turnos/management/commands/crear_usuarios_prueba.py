@@ -37,7 +37,7 @@ class Command(BaseCommand):
                     defaults={'descripcion': "Especialidad general"}
                 )
                 if created:
-                    self.stdout.write(f" Especialidad creada: {especialidad.nombre}")
+                    self.stdout.write(f"✅ Especialidad creada: {especialidad.nombre}")
                 
                 for user_data in usuarios_prueba:
                     # Crear AuthUser
@@ -53,9 +53,9 @@ class Command(BaseCommand):
                     if created:
                         auth_user.set_password(user_data['password'])
                         auth_user.save()
-                        self.stdout.write(f" Usuario creado: {auth_user.username}")
+                        self.stdout.write(f"✅ Usuario creado: {auth_user.username}")
                     else:
-                        self.stdout.write(f"ℹ  Usuario ya existe: {auth_user.username}")
+                        self.stdout.write(f"ℹ️  Usuario ya existe: {auth_user.username}")
                     
                     # Definir nombres específicos
                     if user_data['username'] == 'melisahernandez':
@@ -77,9 +77,9 @@ class Command(BaseCommand):
                     )
                     
                     if created:
-                        self.stdout.write(f" Persona creada: {persona.nombre} ({persona.tipo_usuario})")
+                        self.stdout.write(f"✅ Persona creada: {persona.nombre} ({persona.tipo_usuario})")
                     else:
-                        self.stdout.write(f" Persona ya existe: {persona.nombre} ({persona.tipo_usuario})")
+                        self.stdout.write(f"ℹ️  Persona ya existe: {persona.nombre} ({persona.tipo_usuario})")
                     
                     # Crear registros específicos según el tipo
                     if user_data['tipo'] == 'paciente':
@@ -93,7 +93,7 @@ class Command(BaseCommand):
                             }
                         )
                         if created:
-                            self.stdout.write(f" Paciente creado: {paciente.dni}")
+                            self.stdout.write(f"✅ Paciente creado: {paciente.dni}")
                     
                     elif user_data['tipo'] == 'doctor':
                         medico, created = Medico.objects.get_or_create(
@@ -105,14 +105,14 @@ class Command(BaseCommand):
                             }
                         )
                         if created:
-                            self.stdout.write(f" Médico creado: {medico.matricula}")
+                            self.stdout.write(f"✅ Médico creado: {medico.matricula}")
                 
-                self.stdout.write("\n Usuarios de prueba creados exitosamente!")
+                self.stdout.write("\n🎉 Usuarios de prueba creados exitosamente!")
                 self.stdout.write("\nUsuarios disponibles:")
                 for user_data in usuarios_prueba:
-                    self.stdout.write(f"  {user_data['username']} ({user_data['tipo']}) - Password: {user_data['password']}")
+                    self.stdout.write(f"   👤 {user_data['username']} ({user_data['tipo']}) - Password: {user_data['password']}")
                 
         except Exception as e:
-            self.stdout.write(f" Error: {e}")
+            self.stdout.write(f"❌ Error: {e}")
             import traceback
             self.stdout.write(traceback.format_exc())
