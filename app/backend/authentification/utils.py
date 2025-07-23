@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.core.cache import cache
-import json as json_module
 import json
 from django.contrib.auth.hashers import make_password, check_password
 
@@ -33,7 +32,6 @@ def create_redis_session(auth_user, persona, request=None):
         print(f"[DEBUG] Intentando guardar en cache...")
         
         # Verificar que cache esté disponible
-        from django.core.cache import cache
         print(f"[DEBUG] Cache backend: {cache.__class__.__name__}")
         
         # Guardar en Redis
@@ -68,7 +66,7 @@ def get_redis_session(auth_user_id):
     session_key = f"user_session:{auth_user_id}"
     session_data = cache.get(session_key)
     if session_data:
-        return json_module.loads(session_data)
+        return json.loads(session_data)
     return None
 
 def delete_redis_session(auth_user_id):
@@ -79,71 +77,26 @@ def delete_redis_session(auth_user_id):
 def authenticate_user_and_create_session(username, password, request=None):
     """
     Autentica usuario y crea sesión en Redis.
+    SEGURO: Solo usa base de datos con contraseñas hasheadas.
     """
     try:
         from .models import AuthUser, Persona
-        print(f"[DEBUG] === INICIO AUTENTICACIÓN ===")
+        print(f"[DEBUG] === INICIO AUTENTICACIÓN SEGURA ===")
         print(f"[DEBUG] Username: {username}")
         print(f"[DEBUG] Password recibido: {'SÍ' if password else 'NO'}")
 
-        # 1. Buscar credenciales en Redis (cache)
-        cache_key = f"user_credentials:{username}"
-        cached_data = cache.get(cache_key)
-        if cached_data:
-            try:
-                cached = json_module.loads(cached_data)
-                print(f"[DEBUG] Cache hit para {username}: {cached}")
-                # Verificar contraseña (guardada como texto plano en cache)
-                if check_password(password,cached.get('password_hash')):
-                    print(f"[DEBUG] ✅ Contraseña correcta (cache) para: {username}")
-                    # Simular objetos mínimos para compatibilidad
-                    class DummyAuthUser:
-                        def __init__(self, id, username):
-                            self.id = id
-                            self.username = username
-                    class DummyPersona:
-                        def __init__(self, nombre, apellido, tipo_usuario):
-                            self.nombre = nombre
-                            self.apellido = apellido
-                            self.tipo_usuario = tipo_usuario
-                    auth_user = DummyAuthUser(cached['auth_user_id'], username)
-                    persona = DummyPersona(cached['nombre'], cached['apellido'], cached['tipo_usuario'])
-                    redis_session_key = create_redis_session(auth_user, persona, request)
-                    return {
-                        'success': True,
-                        'auth_user': auth_user,
-                        'persona': persona,
-                        'redis_session_key': redis_session_key,
-                        'session_data': {
-                            'auth_user_id': auth_user.id,
-                            'username': auth_user.username,
-                            'tipo_usuario': persona.tipo_usuario,
-                            'nombre': persona.nombre,
-                            'apellido': persona.apellido,
-                            'redis_session_key': redis_session_key
-                        }
-                    }
-                else:
-                    print(f"[DEBUG] ❌ Contraseña incorrecta (cache) para: {username}")
-                    return {
-                        'success': False,
-                        'error': 'Credenciales inválidas.',
-                        'status': 401
-                    }
-            except Exception as e:
-                print(f"[DEBUG] ❌ Error al leer cache: {e}")
-
-        # 2. Si no está en cache, buscar en la base de datos
+        # Buscar usuario en la base de datos
         try:
             auth_user = AuthUser.objects.get(username=username)
         except AuthUser.DoesNotExist:
             print(f"[DEBUG] ❌ Usuario no encontrado: {username}")
             return {
                 'success': False,
-                'error': 'Usuario no encontrado.',
-                'status': 404
+                'error': 'Credenciales inválidas.',
+                'status': 401
             }
 
+        # Verificar contraseña usando el hash de Django
         if not auth_user.check_password(password):
             print(f"[DEBUG] ❌ Contraseña incorrecta para: {username}")
             return {
@@ -152,35 +105,24 @@ def authenticate_user_and_create_session(username, password, request=None):
                 'status': 401
             }
 
-        print(f"[DEBUG] ✅ Contraseña correcta para: {username}")
+        print(f"[DEBUG] ✅ Contraseña correcta (DB) para: {username}")
+
+        # Obtener datos de persona
         try:
-            persona = Persona.objects.get(auth_user=auth_user)
+            persona = auth_user.persona
         except Persona.DoesNotExist:
-            print(f"[DEBUG] ❌ Persona no encontrada para usuario: {username}")
+            print(f"[DEBUG] ❌ Persona no encontrada para: {username}")
             return {
                 'success': False,
-                'error': 'Datos de persona no encontrados.',
-                'status': 404
+                'error': 'Datos de usuario incompletos.',
+                'status': 500
             }
 
-        # 3. Guardar credenciales en Redis (cache)
+        print(f"[DEBUG] ✅ Persona encontrada: {persona.nombre} {persona.apellido}")
 
-        print(f"[DEBUG] Guardando en Redis: username='{username}', cache_key='{cache_key}'")
-        cache_data = {
-            'auth_user_id': auth_user.id,
-            'username': auth_user.username,
-            'nombre': persona.nombre,
-            'apellido': persona.apellido,
-            'tipo_usuario': persona.tipo_usuario,
-            'password_hash': make_password(password) # ⚠️ En producción NO guardar contraseñas en texto plano
-        }
-        cache.set(cache_key, json_module.dumps(cache_data), timeout=86400)
-        print(f"[DEBUG] Credenciales guardadas en cache para {username}")
-
-        # 4. Crear sesión en Redis
+        # Crear sesión en Redis (sin contraseñas)
         redis_session_key = create_redis_session(auth_user, persona, request)
-        print(f"[DEBUG] Redis session key retornado: {redis_session_key}")
-
+        
         return {
             'success': True,
             'auth_user': auth_user,
@@ -202,10 +144,9 @@ def authenticate_user_and_create_session(username, password, request=None):
         traceback.print_exc()
         return {
             'success': False,
-            'error': str(e),
+            'error': 'Error interno del servidor.',
             'status': 500
         }
-    
 
 def set_session_data(request, session_data):
     """
