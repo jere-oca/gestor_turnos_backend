@@ -7,16 +7,17 @@ import DetalleTurno from './DetalleTurno';
 import TurnosNavigation from './TurnosNavigation';
 import './Turnos.css';
 
-function TurnosMain() {
+function TurnosMain({ userRole }) {
   return (
     <div className="turnos-main">
       <TurnosNavigation />
       <div className="turnos-content">
         <Routes>
-          <Route path="/" element={<ListarTurnos />} />
-          <Route path="/crear" element={<CrearTurno />} />
-          <Route path="/editar/:id" element={<EditarTurno />} />
-          <Route path="/detalle/:id" element={<DetalleTurno />} />
+          <Route path="/" element={<ListarTurnos userRole={userRole} />} />
+          <Route path="/crear" element={<CrearTurno userRole={userRole} />} />
+          {/* Solo permitir ruta de edición si NO es paciente */}
+          {userRole !== 'PACIENTE' && <Route path="/editar/:id" element={<EditarTurno userRole={userRole} />} />}
+          <Route path="/detalle/:id" element={<DetalleTurno userRole={userRole} />} />
           <Route path="*" element={<Navigate to="/turnos" replace />} />
         </Routes>
       </div>

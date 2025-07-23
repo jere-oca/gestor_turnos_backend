@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import './Turnos.css';
 
-function EditarTurno() {
+function EditarTurno({ userRole }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [turno, setTurno] = useState(null);
@@ -111,17 +111,17 @@ function EditarTurno() {
     }
   };
 
+  if (userRole === 'PACIENTE') {
+    return <div className="error">No tienes permiso para editar turnos.</div>;
+  }
   if (loading && !turno) return <div className="loading">Cargando datos del turno...</div>;
-
   if (error) return <div className="error">{error}</div>;
-
   return (
     <div className="editar-turno-container">
       <h2>Editar Turno</h2>
-      
       {error && <div className="error">{error}</div>}
-      
       <form onSubmit={handleSubmit} className="turno-form">
+        {/* ...existing code... */}
         <div className="form-group">
           <label htmlFor="especialidad_id">Especialidad:</label>
           <select 
@@ -139,7 +139,6 @@ function EditarTurno() {
             ))}
           </select>
         </div>
-
         {formData.especialidad_id && (
           <div className="form-group">
             <label htmlFor="medico_id">Médico:</label>
@@ -159,7 +158,6 @@ function EditarTurno() {
             </select>
           </div>
         )}
-
         <div className="form-group">
           <label htmlFor="fecha">Fecha:</label>
           <input 
@@ -172,7 +170,6 @@ function EditarTurno() {
             required
           />
         </div>
-
         <div className="form-group">
           <label htmlFor="hora">Hora:</label>
           <input 
@@ -184,7 +181,6 @@ function EditarTurno() {
             required
           />
         </div>
-
         <div className="form-buttons">
           <button type="button" onClick={() => navigate('/turnos')} className="btn-cancelar">
             Cancelar

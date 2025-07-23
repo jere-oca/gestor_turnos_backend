@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../../utils/axiosConfig';
 import './Turnos.css';
 
-function DetalleTurno() {
+function DetalleTurno({ userRole }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [turno, setTurno] = useState(null);
@@ -103,13 +103,14 @@ function DetalleTurno() {
           
           {turno.estado !== 'cancelado' && (
             <>
-              <button 
-                onClick={() => navigate(`/turnos/editar/${id}`)} 
-                className="btn-editar"
-              >
-                Editar Turno
-              </button>
-              
+              {userRole !== 'PACIENTE' && (
+                <button 
+                  onClick={() => navigate(`/turnos/editar/${id}`)} 
+                  className="btn-editar"
+                >
+                  Editar Turno
+                </button>
+              )}
               <button 
                 onClick={handleCancelar} 
                 className="btn-cancelar"

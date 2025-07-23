@@ -26,6 +26,7 @@ class PacienteSerializer(serializers.ModelSerializer):
 class TurnoSerializer(serializers.ModelSerializer):
     medico = MedicoSerializer(read_only=True)
     paciente = PacienteSerializer(read_only=True)
+<<<<<<< Updated upstream
     
     # Campos para escribir IDs
     medico_id = serializers.IntegerField(write_only=True, required=False)
@@ -35,3 +36,11 @@ class TurnoSerializer(serializers.ModelSerializer):
         model = Turno
         fields = ['id', 'fecha', 'hora', 'medico', 'paciente', 'estado', 'medico_id', 'paciente_id']
         read_only_fields = ['estado'] 
+=======
+    medico_id = serializers.PrimaryKeyRelatedField(queryset=Medico.objects.all(), source='medico', write_only=True, required=True)
+
+    class Meta:
+        model = Turno
+        fields = ['id', 'fecha', 'hora', 'medico', 'medico_id', 'paciente', 'estado']
+        read_only_fields = ['estado', 'medico', 'paciente']
+>>>>>>> Stashed changes
