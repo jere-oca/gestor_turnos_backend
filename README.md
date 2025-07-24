@@ -15,12 +15,6 @@ Aplicación web para la gestión de turnos médicos, desarrollada como proyecto 
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/) (generalmente ya incluido en Docker Desktop)
 
-## 🗂️ Estructura del repositorio
-
-- `/app/` - Código fuente del backend (Django)
-  - `/fixtures/` - Datos iniciales de ejemplo (fixtures)
-  - `/frontend/` - Aplicación frontend en React
-
 ## 👨‍💻 Miembros del equipo
 
 - Jeremias Ocaña
