@@ -1,25 +1,18 @@
-# 🗓️ Gestor de Turnos - UTN
+# Backend de Gestor de Turnos
 
-Aplicación web para la gestión de turnos médicos, desarrollada como proyecto académico para la UTN. Permite a pacientes, profesionales y personal administrativo gestionar reservas de turnos, agendas y atención de manera eficiente.
+> Fork personal del repositorio `gestor_turnos` ([Grupo9](https://github.com/UTN-BDA/Grupo9))
 
-## 🚀 Tecnologías principales
+## Tecnologías
 
-- **Backend:** Python 3.12, Django 5.2
+- **Backend:** Python, Django + Django REST Framework
 - **Frontend:** React
 - **Base de datos:** PostgreSQL
 - **Contenedores:** Docker + Docker Compose
 - **Control de versiones:** Git + GitHub
 
-## ⚠️ Requisitos previos
+## Requisitos previos
 
-- [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/) (generalmente ya incluido en Docker Desktop)
-
-## 👨‍💻 Miembros del equipo
-
-- Jeremias Ocaña
-- Lautaro Sanz
-- Santiago Sabio
 
 ## ⚙️ Instalación y ejecución
 
@@ -33,39 +26,16 @@ cd Grupo9
 ### 2. Levantar los contenedores
 
 ```bash
-docker-compose up -d --build
+docker compose up -d
 ```
 
-> **Nota:**  
-> - Las migraciones de base de datos se aplican automáticamente al iniciar el contenedor del backend gracias al script `entrypoint.sh`. 
-> - Los datos de ejemplo (fixtures) se cargan automáticamente
-> - Las contraseñas se configuran automáticamente de forma segura
-> - No es necesario ejecutar comandos adicionales
-
-#### 2.1. (Opcional) Configuración manual
-
-Si por algún motivo la configuración automática no funciona, puedes ejecutar estos comandos manualmente:
-
-```bash
-# Aplica migraciones de base de datos
-docker exec backend ./entrypoint.sh
-```
+> - Las migraciones de base de datos se aplican automáticamente al iniciar el contenedor `backend` gracias al script `entrypoint.sh`.
+> - Los datos de ejemplo (fixtures) se cargan automáticamente.
 
 ### 3. Acceder a la aplicación
 
 - **Frontend:** [http://localhost:3000/](http://localhost:3000/)
-- **Backend (API):** [http://localhost:8000/](http://localhost:8000/)
 - **Panel de administración:** [http://localhost:8000/admin/](http://localhost:8000/admin/)
-
-#### 3.1. Endpoints principales de la API
-
-- `POST /api/login/` - Autenticación de usuarios
-- `POST /api/logout/` - Cerrar sesión
-- `GET /api/turnos/` - Listar turnos (requiere autenticación)
-- `POST /api/turnos/` - Crear nuevo turno (requiere autenticación)
-- `GET /api/medicos/` - Listar médicos (requiere autenticación)
-- `GET /api/pacientes/` - Listar pacientes (requiere autenticación)
-- `GET /api/especialidades/` - Listar especialidades (requiere autenticación)
 
 ### 4. Usuarios de prueba
 
@@ -90,7 +60,7 @@ curl -X POST http://localhost:8000/api/login/ \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"admin123"}'
 
-# Verificar que la API de turnos está protegida (debe pedir autenticación)
+# Verificar que la API de turnos solicita autenticación
 curl http://localhost:8000/api/turnos/
 ```
 
@@ -104,7 +74,7 @@ docker compose exec backend python manage.py createsuperuser
 
 Luego podrás ingresar al panel de administración en: [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-## 🧪 Testing
+## Testing
 
 ### Tests de performance
 
@@ -112,28 +82,12 @@ Luego podrás ingresar al panel de administración en: [http://localhost:8000/ad
 docker compose exec backend bash /app/backend/run_performance_tests.sh
 ```
 
-## 🔧 Solución de problemas
+## Solución de problemas
 
 ### Problema: "Las credenciales de autenticación no se proveyeron"
 - **Causa**: Este es el comportamiento normal de la API REST
 - **Solución**: Usar las credenciales de usuarios de prueba para autenticarse
 
-### Problema: Los contenedores no se inician correctamente
-```bash
-# Verificar el estado de los contenedores
-docker-compose ps
-
-# Ver logs en caso de errores
-docker-compose logs backend
-docker-compose logs db
-```
-
-### Problema: Error "No se puede conectar a la base de datos"
-```bash
-# Reiniciar todos los servicios
-docker-compose down
-docker-compose up -d --build
-```
 
 ### Problema: Los datos de ejemplo no aparecen
 ```bash
@@ -145,6 +99,7 @@ docker exec backend python manage.py setup_passwords
 
 ### Limpieza completa del sistema
 Si necesitas empezar desde cero:
+
 ```bash
 # Detener y eliminar todo (incluyendo volúmenes)
 docker-compose down -v --remove-orphans
@@ -153,13 +108,9 @@ docker-compose down -v --remove-orphans
 docker-compose up -d --build
 ```
 
-## Restore Backup
+## Restaurar Backup
 
-###
-
-
-Antes de restarurar la base de datos debemos ejecutar
-
+Antes de restaurar la base de datos debemos ejecutar
 
 ```bash
 docker compose exec backend bash
@@ -167,12 +118,8 @@ docker compose exec backend bash
 
 ```bash
 apt-get update && apt-get install -y dos2unix
-
 dos2unix /app/scripts/restore_simple.sh
-
 chmod +x /app/scripts/restore_simple.sh
-
 /app/scripts/restore_simple.sh backup_mydatabase_20250723_155410.sql
-
-#Podemos elegir ese archivo de backup o el ultimo que generemos
+# Podemos elegir ese archivo de backup o el ultimo que generemos
 ```
